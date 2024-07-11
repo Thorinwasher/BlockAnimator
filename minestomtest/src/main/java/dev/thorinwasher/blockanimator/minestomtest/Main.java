@@ -1,12 +1,13 @@
 package dev.thorinwasher.blockanimator.minestomtest;
 
 import dev.thorinwasher.blockanimator.Animation;
-import dev.thorinwasher.blockanimator.CompiledAnimation;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveAnimation;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveLinear;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveQuadraticBezier;
+import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
 import dev.thorinwasher.blockanimator.minestom.Animator;
 import dev.thorinwasher.blockanimator.selector.BlockSelector;
+import dev.thorinwasher.blockanimator.selector.BottomFirstSelector;
 import dev.thorinwasher.blockanimator.selector.RandomSpherical;
 import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.timer.BlockTimer;
@@ -45,6 +46,7 @@ public class Main {
         Command command = new Command("animate");
 
         ArgumentWord motion = new ArgumentWord("motion").from("linear", "quadratic");
+        ArgumentWord selector = new ArgumentWord("selector").from("random_spherical", "bottom_first");
         ArgumentInteger size = new ArgumentInteger("size");
         ArgumentInteger time = new ArgumentInteger("time");
         command.addSyntax(((sender, context) -> {
@@ -52,17 +54,23 @@ public class Main {
                 throw new IllegalArgumentException("Only players can execute this command!");
             }
             BlockMoveAnimation blockMoveAnimation = switch (context.get(motion)) {
-                case "linear" -> new BlockMoveLinear(toVector3D(player.getPosition()), 0.2);
-                case "quadratic" -> new BlockMoveQuadraticBezier(toVector3D(player.getPosition()), 0.2, () -> 10D);
-                default -> throw new IllegalArgumentException("Unknown animator");
+                case "linear" -> new BlockMoveLinear(toVector3D(player.getPosition()), new EaseOutCubicPathCompletionSupplier(0.2));
+                case "quadratic" -> new BlockMoveQuadraticBezier(toVector3D(player.getPosition()), new EaseOutCubicPathCompletionSupplier(0.2), () -> 10D);
+                default -> throw new IllegalArgumentException("Unknown block animator");
             };
             BlockSupplier<Block> blockSupplier = new TestSupplier(Block.DIAMOND_BLOCK, context.get(size), player.getPosition().add(20, 0, 0));
             BlockTimer blockTimer = new LinearBlockTimer(context.get(time));
-            BlockSelector blockSelector = new RandomSpherical();
-            CompiledAnimation<Block> compiledAnimation = new Animation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer).compile();
-            Animator animator = new Animator(compiledAnimation, player.getInstance());
+            BlockSelector blockSelector = switch(context.get(selector)) {
+                case "random_spherical" -> new RandomSpherical();
+                case "bottom_first" -> new BottomFirstSelector();
+                default -> throw new IllegalArgumentException("Unknown block selector");
+            };
+            Animation<Block> animation = new Animation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer);
+            Thread thread = new Thread(animation::compile);
+            thread.start();
+            Animator animator = new Animator(animation, player.getInstance());
             MinecraftServer.getSchedulerManager().scheduleTask(animator::nextTick, TaskSchedule.immediate(), TaskSchedule.tick(1));
-        }), motion, size, time);
+        }), motion, selector, size, time);
         commandManager.register(command);
 
         minecraftServer.start(System.getProperty("address", "0.0.0.0"), Integer.getInteger("port", 25565));

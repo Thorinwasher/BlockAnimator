@@ -1,5 +1,7 @@
 package dev.thorinwasher.blockanimator.blockanimations;
 
+import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.FixedStepsPathCompletionSupplier;
+import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.PathCompletionSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.ArrayList;
@@ -10,13 +12,13 @@ import java.util.function.Supplier;
 public class BlockMoveQuadraticBezier implements BlockMoveAnimation {
 
     private final Vector3D from;
-    private final double speed;
+    private final PathCompletionSupplier pathCompletionSupplier;
     private static final Random RANDOM = new Random();
     private final Supplier<Double> controlPointLengthSupplier;
 
-    public BlockMoveQuadraticBezier(Vector3D from, double speed, Supplier<Double> controlPointLengthSupplier) {
+    public BlockMoveQuadraticBezier(Vector3D from, PathCompletionSupplier pathCompletionSupplier, Supplier<Double> controlPointLengthSupplier) {
         this.from = from;
-        this.speed = speed;
+        this.pathCompletionSupplier = pathCompletionSupplier;
         this.controlPointLengthSupplier = controlPointLengthSupplier;
     }
 
@@ -30,12 +32,12 @@ public class BlockMoveQuadraticBezier implements BlockMoveAnimation {
         Vector3D randomOrthogonal = orthogonal1.scalarMultiply(Math.cos(randomRadians)).add(orthogonal2.scalarMultiply(Math.sin(randomRadians)));
         Vector3D controlPoint = from.add(randomOrthogonal.scalarMultiply(controlPointLengthSupplier.get()));
         double pathLength = bezierCurveLength(from, to, controlPoint);
-        int steps = (int) Math.ceil(pathLength / speed);
+        List<Double> steps = pathCompletionSupplier.compile(pathLength).stream().map(value -> value/pathLength).toList();
         return new CompiledBlockMoveAnimation(calculateBezierCurve(from, to, controlPoint, steps));
     }
 
     private static double bezierCurveLength(Vector3D from, Vector3D to, Vector3D controlPoint) {
-        int steps = 100;
+        List<Double> steps = new FixedStepsPathCompletionSupplier(20).compile(1D);
         List<Vector3D> bezierCurve = calculateBezierCurve(from, to, controlPoint, steps);
         Vector3D previous = null;
         double length = 0;
@@ -48,16 +50,16 @@ public class BlockMoveQuadraticBezier implements BlockMoveAnimation {
         return length;
     }
 
-    private static List<Vector3D> calculateBezierCurve(Vector3D from, Vector3D to, Vector3D controlPoint, int steps) {
-        List<Vector3D> bezierCurve = new ArrayList<>(steps + 1);
-        for (int step = 0; step < steps + 1; step++) {
-            double time = (double) step / steps;
+    private static List<Vector3D> calculateBezierCurve(Vector3D from, Vector3D to, Vector3D controlPoint, List<Double> steps) {
+        List<Vector3D> bezierCurve = new ArrayList<>(steps.size());
+        for (double time : steps) {
             double A = Math.pow(1 - time, 2);
             double B = 2 * (1 - time)*time;
             double C = Math.pow(time, 2);
             Vector3D vectorPoint = from.scalarMultiply(A).add(controlPoint.scalarMultiply(B)).add(to.scalarMultiply(C));
             bezierCurve.add(vectorPoint);
         }
+        bezierCurve.add(to);
         return bezierCurve;
     }
 }
