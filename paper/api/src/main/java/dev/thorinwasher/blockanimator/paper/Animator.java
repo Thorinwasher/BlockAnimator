@@ -1,6 +1,6 @@
 package dev.thorinwasher.blockanimator.paper;
 
-import dev.thorinwasher.blockanimator.CompiledAnimation;
+import dev.thorinwasher.blockanimator.Animation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -9,12 +9,11 @@ import org.bukkit.block.BlockState;
 
 public abstract class Animator {
 
-    protected final CompiledAnimation<BlockState> animation;
+    protected final Animation<BlockState> animation;
     protected final World world;
-    protected int tick = 0;
 
-    public Animator(CompiledAnimation<BlockState> compiledAnimation, World world) {
-        this.animation = compiledAnimation;
+    public Animator(Animation<BlockState> animation, World world) {
+        this.animation = animation;
         this.world = world;
     }
 

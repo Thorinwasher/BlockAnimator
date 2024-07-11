@@ -1,7 +1,7 @@
 package dev.thorinwasher.blockanimator.minestom;
 
+import dev.thorinwasher.blockanimator.Animation;
 import dev.thorinwasher.blockanimator.AnimationFrame;
-import dev.thorinwasher.blockanimator.CompiledAnimation;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
@@ -15,25 +15,24 @@ import java.util.Map;
 
 public class Animator {
 
-    private final CompiledAnimation<Block> compiledAnimation;
+    private final Animation<Block> animation;
     private final Instance instance;
     private final Map<Vector3D, Entity> blockEntityMap = new HashMap<>();
-    private int tick = 0;
 
-    public Animator(CompiledAnimation<Block> compiledAnimation, Instance instance) {
-        this.compiledAnimation = compiledAnimation;
+    public Animator(Animation<Block> animation, Instance instance) {
+        this.animation = animation;
         this.instance = instance;
     }
 
     public void nextTick() {
-        if (compiledAnimation.frames().size() == tick) {
+        if (animation.getStatus() != Animation.AnimationStatus.READY_FOR_ANIMATION) {
             return;
         }
-        AnimationFrame frame = compiledAnimation.frames().get(tick);
+        AnimationFrame frame = animation.getNext();
         for (Map.Entry<Vector3D, Vector3D> entry : frame.currentToDestination().entrySet()) {
             Entity blockDisplay = blockEntityMap.get(entry.getKey());
             if (blockDisplay == null) {
-                Block block = compiledAnimation.supplier().getBlock(entry.getKey());
+                Block block = animation.supplier().getBlock(entry.getKey());
                 blockDisplay = new Entity(EntityType.BLOCK_DISPLAY);
                 BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
                 blockDisplayMeta.setBlockState(block);
@@ -46,15 +45,14 @@ public class Animator {
             if (entry.getKey().equals(entry.getValue())) {
                 blockDisplay.remove();
                 blockEntityMap.remove(entry.getKey());
-                Block block = compiledAnimation.supplier().getBlock(entry.getKey());
+                Block block = animation.supplier().getBlock(entry.getKey());
                 instance.setBlock(toPos(entry.getKey()), block);
             }
         }
-        tick++;
     }
 
-    public boolean finished(){
-        return compiledAnimation.frames().size() <= tick;
+    public boolean finished() {
+        return animation.getStatus() == Animation.AnimationStatus.COMPLETED;
     }
 
     public Pos toPos(Vector3D vector3D) {

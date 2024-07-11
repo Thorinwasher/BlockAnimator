@@ -1,5 +1,3 @@
-import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
-
 plugins {
     id("java")
     id("xyz.jpenilla.run-paper") version "2.3.0"
