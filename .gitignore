@@ -26,7 +26,6 @@ replay_pid*
 
 # IDE Generated directories
 .idea/**
-.gradle/**
-testplugin/run/**
-paper/.gradle/**
+papertest/run/**
+**/.gradle/**
 **/build/**
