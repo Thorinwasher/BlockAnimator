@@ -42,7 +42,7 @@ public class AnimateCommand implements CommandExecutor {
         BlockSupplier<BlockState> blockSupplier = new TestSupplier(Material.DIAMOND_BLOCK, Integer.parseInt(args[1]), player.getLocation().add(player.getFacing().getDirection().multiply(20)));
         BlockTimer blockTimer = new LinearBlockTimer(Integer.parseInt(args[2]));
         BlockSelector blockSelector = new RandomSpherical();
-        Animation<BlockState> animation = new Animation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer);
+        Animation<BlockState> animation = new Animation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 10);
         Animator animator = new Animator1_18_2(animation, player.getWorld());
         Bukkit.getScheduler().runTaskAsynchronously(plugin, animation::compile);
         Bukkit.getScheduler().runTaskTimer(plugin, (task) -> {

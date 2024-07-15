@@ -65,7 +65,7 @@ public class Main {
                 case "bottom_first" -> new BottomFirstSelector();
                 default -> throw new IllegalArgumentException("Unknown block selector");
             };
-            Animation<Block> animation = new Animation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer);
+            Animation<Block> animation = new Animation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
             Thread thread = new Thread(animation::compile);
             thread.start();
             Animator animator = new Animator(animation, player.getInstance());

@@ -11,9 +11,8 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 public class Animation<B> {
 
@@ -26,13 +25,15 @@ public class Animation<B> {
     private boolean compileCompleted = false;
     private AtomicInteger currentFrame = new AtomicInteger();
     private AtomicInteger currentCompiledFrame = new AtomicInteger();
+    private final int framesBuffer;
 
     public Animation(BlockSelector blockSelector, BlockMoveAnimation blockMoveAnimation,
-                     BlockSupplier<B> blockSupplier, BlockTimer blockTimer) {
+                     BlockSupplier<B> blockSupplier, BlockTimer blockTimer, int framesBuffer) {
         this.blockSelector = blockSelector;
         this.blockMoveAnimation = blockMoveAnimation;
         this.blockSupplier = blockSupplier;
         this.blockTimer = blockTimer;
+        this.framesBuffer = framesBuffer;
     }
 
     /**
@@ -74,7 +75,7 @@ public class Animation<B> {
         if (compileCompleted && frames.isEmpty()) {
             return AnimationStatus.COMPLETED;
         }
-        if (currentFrame.get() + 10 < currentCompiledFrame.get() || compileCompleted) {
+        if (framesBuffer < currentCompiledFrame.get() || compileCompleted) {
             return AnimationStatus.READY_FOR_ANIMATION;
         } else {
             return AnimationStatus.NOT_READY_FOR_ANIMATION;
