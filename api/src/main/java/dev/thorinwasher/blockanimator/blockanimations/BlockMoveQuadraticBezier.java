@@ -32,7 +32,7 @@ public class BlockMoveQuadraticBezier implements BlockMoveAnimation {
         Vector3D randomOrthogonal = orthogonal1.scalarMultiply(Math.cos(randomRadians)).add(orthogonal2.scalarMultiply(Math.sin(randomRadians)));
         Vector3D controlPoint = from.add(randomOrthogonal.scalarMultiply(controlPointLengthSupplier.get()));
         double pathLength = bezierCurveLength(from, to, controlPoint);
-        List<Double> steps = pathCompletionSupplier.compile(pathLength).stream().map(value -> value/pathLength).toList();
+        List<Double> steps = pathCompletionSupplier.compile(pathLength);
         return new CompiledBlockMoveAnimation(calculateBezierCurve(from, to, controlPoint, steps));
     }
 

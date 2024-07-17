@@ -17,10 +17,9 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+    implementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
     implementation(project(":api"))
-    implementation(project(":paper:api"))
-    implementation(project(":paper:v_1_18_2"))
+    implementation(project(":paper"))
     implementation("org.apache.commons:commons-math3:3.6.1")
 }
 
@@ -30,7 +29,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.18.2")
+        minecraftVersion("1.19.4")
     }
 
     processResources {
@@ -46,8 +45,7 @@ tasks {
     shadowJar {
         dependencies {
             include(project(":api:"))
-            include(project(":paper:api"))
-            include(project(":paper:v_1_18_2"))
+            include(project(":paper"))
             include(dependency("org.apache.commons:commons-math3:.*"))
         }
     }

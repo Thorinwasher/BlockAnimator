@@ -16,9 +16,8 @@ public class ConstantSpeedPathCompletionSupplier implements PathCompletionSuppli
         int steps = (int) Math.ceil(pathLength / speed);
         List<Double> output = new ArrayList<>(steps + 1);
         for (int step = 0; step < steps; step++) {
-            output.add(step * speed);
+            output.add(step * speed / pathLength);
         }
-        output.add(pathLength);
         return output;
     }
 }

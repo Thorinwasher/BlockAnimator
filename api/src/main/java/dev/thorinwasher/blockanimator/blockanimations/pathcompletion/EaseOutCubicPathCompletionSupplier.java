@@ -14,11 +14,6 @@ public class EaseOutCubicPathCompletionSupplier implements PathCompletionSupplie
     @Override
     public List<Double> compile(double pathLength) {
         int steps = (int) Math.ceil(pathLength / averageSpeed);
-        List<Double> normalizedPath = getNormalizedPath(steps);
-        return normalizedPath.stream().map(value -> value * pathLength).toList();
-    }
-
-    private List<Double> getNormalizedPath(int steps) {
         List<Double> output = new ArrayList<>(steps);
         for (int step = 0; step < steps; step++) {
             double pathCompletion = (double) step / steps;

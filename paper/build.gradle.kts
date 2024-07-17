@@ -15,7 +15,7 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+    implementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
     implementation("org.apache.commons:commons-math3:3.6.1")
     implementation(project(":api"))
 }

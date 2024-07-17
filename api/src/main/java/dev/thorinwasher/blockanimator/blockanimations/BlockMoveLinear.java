@@ -18,8 +18,7 @@ public class BlockMoveLinear implements BlockMoveAnimation {
     @Override
     public CompiledBlockMoveAnimation compile(Vector3D to) {
         List<Double> compiledPathCompletion = pathCompletionSupplier.compile(to.distance(from));
-        Vector3D travelNorm = to.subtract(from).normalize();
-        Stream<Vector3D> points = compiledPathCompletion.stream().map(pathCompletion -> from.add(travelNorm.scalarMultiply(pathCompletion)));
+        Stream<Vector3D> points = compiledPathCompletion.stream().map(pathCompletion -> from.scalarMultiply(1 - pathCompletion).add(to.scalarMultiply(pathCompletion)));
         return new CompiledBlockMoveAnimation(Stream.concat(points, Stream.of(to)).toList());
     }
 }

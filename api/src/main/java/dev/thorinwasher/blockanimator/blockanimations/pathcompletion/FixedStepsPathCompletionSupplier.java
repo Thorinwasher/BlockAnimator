@@ -16,7 +16,7 @@ public class FixedStepsPathCompletionSupplier implements PathCompletionSupplier 
         List<Double> steps = new ArrayList<>(this.steps);
         double stepLength = pathLength / this.steps;
         for (int step = 0; step < this.steps; step++) {
-            steps.add(stepLength * step);
+            steps.add(stepLength * step / pathLength);
         }
         return steps;
     }

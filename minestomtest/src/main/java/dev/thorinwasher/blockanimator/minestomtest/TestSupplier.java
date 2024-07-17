@@ -2,6 +2,7 @@ package dev.thorinwasher.blockanimator.minestomtest;
 
 import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.block.Block;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
@@ -17,7 +18,7 @@ public class TestSupplier implements BlockSupplier<Block> {
     public TestSupplier(Block material, int size, Point corner) {
         this.material = material;
         this.size = size;
-        this.corner = corner;
+        this.corner = new Vec(corner.blockX(), corner.blockY(), corner.blockZ());
     }
 
 

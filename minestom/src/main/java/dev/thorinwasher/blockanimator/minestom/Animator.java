@@ -3,6 +3,7 @@ package dev.thorinwasher.blockanimator.minestom;
 import dev.thorinwasher.blockanimator.Animation;
 import dev.thorinwasher.blockanimator.AnimationFrame;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.metadata.display.BlockDisplayMeta;
@@ -31,16 +32,17 @@ public class Animator {
         AnimationFrame frame = animation.getNext();
         for (Map.Entry<Vector3D, Vector3D> entry : frame.currentToDestination().entrySet()) {
             Entity blockDisplay = blockEntityMap.get(entry.getKey());
+            Pos to = toPos(entry.getValue());
             if (blockDisplay == null) {
                 Block block = animation.supplier().getBlock(entry.getKey());
                 blockDisplay = new Entity(EntityType.BLOCK_DISPLAY);
                 BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
                 blockDisplayMeta.setBlockState(block);
                 blockDisplayMeta.setHasNoGravity(true);
-                blockDisplay.setInstance(instance, toPos(entry.getValue()));
+                blockDisplay.setInstance(instance, to);
                 blockEntityMap.put(entry.getKey(), blockDisplay);
             } else {
-                blockDisplay.refreshPosition(toPos(entry.getValue()));
+                moveBlockDisplay(blockDisplay, to);
             }
             if (entry.getKey().equals(entry.getValue())) {
                 blockDisplay.remove();
@@ -51,11 +53,22 @@ public class Animator {
         }
     }
 
-    public boolean finished() {
-        return animation.getStatus() == Animation.AnimationStatus.COMPLETED;
-    }
-
     public Pos toPos(Vector3D vector3D) {
         return new Pos(vector3D.getX(), vector3D.getY(), vector3D.getZ());
+    }
+
+    private void moveBlockDisplay(Entity blockDisplay, Pos to) {
+        Pos current = blockDisplay.getPosition();
+        Vec delta = to.sub(current).asVec();
+        BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
+        if (instance.getBlock(to).isAir()) {
+            if (blockDisplayMeta.getTranslation().isZero()) {
+                blockDisplay.setVelocity(delta);
+            } else {
+                blockDisplayMeta.setTranslation(new Vec(0, 0, 0));
+            }
+        } else {
+            blockDisplayMeta.setTranslation(delta);
+        }
     }
 }

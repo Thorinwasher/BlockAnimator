@@ -3,9 +3,9 @@ package dev.thorinwasher.blockanimator.testplugin.command;
 import dev.thorinwasher.blockanimator.Animation;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveAnimation;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveLinear;
+import dev.thorinwasher.blockanimator.blockanimations.BlockMoveQuadraticBezier;
 import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
 import dev.thorinwasher.blockanimator.paper.Animator;
-import dev.thorinwasher.blockanimator.paper_1_18_2.Animator1_18_2;
 import dev.thorinwasher.blockanimator.selector.BlockSelector;
 import dev.thorinwasher.blockanimator.selector.RandomSpherical;
 import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
@@ -42,8 +42,8 @@ public class AnimateCommand implements CommandExecutor {
         BlockSupplier<BlockState> blockSupplier = new TestSupplier(Material.DIAMOND_BLOCK, Integer.parseInt(args[1]), player.getLocation().add(player.getFacing().getDirection().multiply(20)));
         BlockTimer blockTimer = new LinearBlockTimer(Integer.parseInt(args[2]));
         BlockSelector blockSelector = new RandomSpherical();
-        Animation<BlockState> animation = new Animation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 10);
-        Animator animator = new Animator1_18_2(animation, player.getWorld());
+        Animation<BlockState> animation = new Animation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
+        Animator animator = new Animator(animation, player.getWorld());
         Bukkit.getScheduler().runTaskAsynchronously(plugin, animation::compile);
         Bukkit.getScheduler().runTaskTimer(plugin, (task) -> {
             if (animator.nextTick()) {
@@ -57,6 +57,7 @@ public class AnimateCommand implements CommandExecutor {
         return switch (argument) {
             case "linear" ->
                     new BlockMoveLinear(new Vector3D(playerLocation.getX(), playerLocation.getY(), playerLocation.getZ()), new EaseOutCubicPathCompletionSupplier(0.2));
+            case "quadratic" -> new BlockMoveQuadraticBezier(new Vector3D(playerLocation.getX(), playerLocation.getY(), playerLocation.getZ()), new EaseOutCubicPathCompletionSupplier(0.2), () -> 10D);
             default -> throw new IllegalArgumentException();
         };
     }
