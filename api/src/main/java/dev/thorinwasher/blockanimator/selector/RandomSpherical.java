@@ -17,6 +17,7 @@ public class RandomSpherical implements BlockSelector {
         }
         Vector3D centerPoint = vectorSum.scalarMultiply(1 / ((double) blocks.size()));
         List<TwoTuple<Vector3D, Integer>> scoredValues = new ArrayList<>(blocks.stream().map(vec -> evaluateRandomlyFromCenter(vec, centerPoint)).toList());
+        Collections.shuffle(scoredValues, RANDOM);
         scoredValues.sort(Comparator.comparing(TwoTuple::second));
         Deque<Vector3D> queue = new LinkedList<>();
         scoredValues.forEach(tuple -> queue.add(tuple.first()));
