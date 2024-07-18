@@ -2,6 +2,8 @@ package dev.thorinwasher.blockanimator.minestom;
 
 import dev.thorinwasher.blockanimator.Animation;
 import dev.thorinwasher.blockanimator.AnimationFrame;
+import dev.thorinwasher.blockanimator.algorithms.ManhatanNearest;
+import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
@@ -13,6 +15,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Animator {
 
@@ -61,6 +64,29 @@ public class Animator {
         Pos current = blockDisplay.getPosition();
         Vec delta = to.sub(current).asVec();
         BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
-        blockDisplayMeta.setTranslation(delta);
+        if (blockIsApplicable(to)) {
+            blockDisplay.refreshPosition(to);
+            blockDisplayMeta.setTranslation(Vec.ZERO);
+        } else {
+            blockDisplay.setVelocity(Vec.ZERO);
+            if (!blockIsApplicable(current)) {
+                Optional<Pos> closestAirPosOptional = ManhatanNearest.findClosestPosition(toVector3D(to), vector3D -> blockIsApplicable(toPos(vector3D)), 5)
+                        .map(this::toPos);
+                closestAirPosOptional.ifPresent(blockDisplay::refreshPosition);
+                delta = closestAirPosOptional.map(Pos::asVec).orElse(delta);
+            }
+            blockDisplayMeta.setTranslation(delta);
+        }
+    }
+
+    private boolean blockIsApplicable(Point pos) {
+        if (!instance.getBlock(pos).isAir()) {
+            return false;
+        }
+        return !blockEntityMap.containsKey(new Vector3D(pos.blockX(), pos.blockY(), pos.blockZ()));
+    }
+
+    private Vector3D toVector3D(Point point) {
+        return new Vector3D(point.x(), point.y(), point.z());
     }
 }
