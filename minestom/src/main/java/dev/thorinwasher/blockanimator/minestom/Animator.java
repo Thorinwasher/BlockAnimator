@@ -61,14 +61,6 @@ public class Animator {
         Pos current = blockDisplay.getPosition();
         Vec delta = to.sub(current).asVec();
         BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
-        if (instance.getBlock(to).isAir()) {
-            if (blockDisplayMeta.getTranslation().isZero()) {
-                blockDisplay.setVelocity(delta);
-            } else {
-                blockDisplayMeta.setTranslation(new Vec(0, 0, 0));
-            }
-        } else {
-            blockDisplayMeta.setTranslation(delta);
-        }
+        blockDisplayMeta.setTranslation(delta);
     }
 }
