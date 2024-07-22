@@ -1,5 +1,6 @@
 package dev.thorinwasher.blockanimator.paper.handle;
 
+import dev.thorinwasher.blockanimator.algorithms.ManhatanNearest;
 import dev.thorinwasher.blockanimator.animation.Animation;
 import dev.thorinwasher.blockanimator.animation.AnimationFrame;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
@@ -13,6 +14,7 @@ import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Animator1_19_4 implements AnimatorHandle {
 
@@ -39,14 +41,19 @@ public class Animator1_19_4 implements AnimatorHandle {
             BlockDisplay blockDisplay = blockEntityMap.get(entry.getKey());
             Location to = VectorConverter.toLocation(entry.getValue(), world).add(-0.5, 0, -0.5);
             if (blockDisplay == null) {
-                blockDisplay = world.spawn(to, BlockDisplay.class);
+                Optional<Vector3D> middlePoint = ManhatanNearest.findClosestPosition(
+                        entry.getKey().scalarMultiply(0.5).add(entry.getValue().scalarMultiply(0.5)),
+                        vector3D -> VectorConverter.toLocation(vector3D, world).getBlock().getType().isAir(), 5);
+                Location spawnPos = middlePoint
+                        .map(vector3D -> VectorConverter.toLocation(vector3D, world))
+                        .orElse(to);
+                blockDisplay = world.spawn(spawnPos, BlockDisplay.class);
                 blockDisplay.setBlock(animation.supplier().getBlock(entry.getKey()).getBlockData());
                 blockDisplay.setPersistent(false);
                 blockDisplay.setGravity(false);
                 blockEntityMap.put(entry.getKey(), blockDisplay);
-            } else {
-                moveBlockDisplay(blockDisplay, to);
             }
+            moveBlockDisplay(blockDisplay, to);
             if (entry.getKey().equals(entry.getValue())) {
                 blockDisplay.remove();
                 blockEntityMap.remove(entry.getKey());

@@ -1,8 +1,8 @@
 package dev.thorinwasher.blockanimator.minestom;
 
+import dev.thorinwasher.blockanimator.algorithms.ManhatanNearest;
 import dev.thorinwasher.blockanimator.animation.Animation;
 import dev.thorinwasher.blockanimator.animation.AnimationFrame;
-import dev.thorinwasher.blockanimator.algorithms.ManhatanNearest;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
@@ -42,11 +42,16 @@ public class Animator {
                 BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
                 blockDisplayMeta.setBlockState(block);
                 blockDisplayMeta.setHasNoGravity(true);
-                blockDisplay.setInstance(instance, to);
+                Optional<Vector3D> middlePoint = ManhatanNearest.findClosestPosition(
+                        entry.getKey().scalarMultiply(0.5).add(entry.getValue().scalarMultiply(0.5)),
+                        vector3D -> instance.getBlock(toPos(vector3D)).isAir(), 5);
+                Pos spawnPos = middlePoint
+                        .map(this::toPos)
+                                .orElse(to);
+                blockDisplay.setInstance(instance, spawnPos);
                 blockEntityMap.put(entry.getKey(), blockDisplay);
-            } else {
-                moveBlockDisplay(blockDisplay, to);
             }
+            moveBlockDisplay(blockDisplay, to);
             if (entry.getKey().equals(entry.getValue())) {
                 blockDisplay.remove();
                 blockEntityMap.remove(entry.getKey());
@@ -64,19 +69,7 @@ public class Animator {
         Pos current = blockDisplay.getPosition();
         Vec delta = to.sub(current).asVec();
         BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
-        if (blockIsApplicable(to)) {
-            blockDisplay.refreshPosition(to);
-            blockDisplayMeta.setTranslation(Vec.ZERO);
-        } else {
-            blockDisplay.setVelocity(Vec.ZERO);
-            if (!blockIsApplicable(current)) {
-                Optional<Pos> closestAirPosOptional = ManhatanNearest.findClosestPosition(toVector3D(to), vector3D -> blockIsApplicable(toPos(vector3D)), 5)
-                        .map(this::toPos);
-                closestAirPosOptional.ifPresent(blockDisplay::refreshPosition);
-                delta = closestAirPosOptional.map(Pos::asVec).orElse(delta);
-            }
-            blockDisplayMeta.setTranslation(delta);
-        }
+        blockDisplayMeta.setTranslation(delta);
     }
 
     private boolean blockIsApplicable(Point pos) {
