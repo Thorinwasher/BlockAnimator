@@ -78,8 +78,4 @@ public class Animator {
         }
         return !blockEntityMap.containsKey(new Vector3D(pos.blockX(), pos.blockY(), pos.blockZ()));
     }
-
-    private Vector3D toVector3D(Point point) {
-        return new Vector3D(point.x(), point.y(), point.z());
-    }
 }

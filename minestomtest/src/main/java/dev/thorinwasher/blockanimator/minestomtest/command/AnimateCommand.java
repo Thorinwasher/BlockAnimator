@@ -42,7 +42,7 @@ public class AnimateCommand extends Command {
                 case "quadratic" -> new BlockMoveQuadraticBezier(Main.toVector3D(player.getPosition()), new EaseOutCubicPathCompletionSupplier(0.2), () -> 10D);
                 default -> throw new IllegalArgumentException("Unknown block animator");
             };
-            BlockSupplier<Block> blockSupplier = new TestSupplier(Block.DIAMOND_BLOCK, context.get(size), player.getPosition().add(20, 0, 0));
+            BlockSupplier<Block> blockSupplier = BlockSupplierUtil.getBlockSupplier(player, context.get(size));
             BlockTimer blockTimer = new LinearBlockTimer(context.get(time));
             BlockSelector blockSelector = switch(context.get(selector)) {
                 case "random_spherical" -> new RandomSpherical();

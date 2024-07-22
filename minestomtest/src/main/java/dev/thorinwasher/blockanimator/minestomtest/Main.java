@@ -7,6 +7,7 @@ import dev.thorinwasher.blockanimator.blockanimations.BlockMoveQuadraticBezier;
 import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
 import dev.thorinwasher.blockanimator.minestom.Animator;
 import dev.thorinwasher.blockanimator.minestomtest.command.AnimateCommand;
+import dev.thorinwasher.blockanimator.minestomtest.command.LoadSchemCommand;
 import dev.thorinwasher.blockanimator.minestomtest.command.SpecialAnimateCommand;
 import dev.thorinwasher.blockanimator.selector.BlockSelector;
 import dev.thorinwasher.blockanimator.selector.BottomFirstSelector;
@@ -47,6 +48,7 @@ public class Main {
         CommandManager commandManager = MinecraftServer.getCommandManager();
         commandManager.register(new SpecialAnimateCommand());
         commandManager.register(new AnimateCommand());
+        commandManager.register(new LoadSchemCommand());
 
         minecraftServer.start(System.getProperty("address", "0.0.0.0"), Integer.getInteger("port", 25565));
     }
