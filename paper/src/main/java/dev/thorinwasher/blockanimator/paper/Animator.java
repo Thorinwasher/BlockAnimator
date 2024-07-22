@@ -1,6 +1,6 @@
 package dev.thorinwasher.blockanimator.paper;
 
-import dev.thorinwasher.blockanimator.Animation;
+import dev.thorinwasher.blockanimator.animation.Animation;
 import dev.thorinwasher.blockanimator.paper.handle.Animator1_16_4;
 import dev.thorinwasher.blockanimator.paper.handle.Animator1_19_4;
 import dev.thorinwasher.blockanimator.paper.handle.AnimatorHandle;

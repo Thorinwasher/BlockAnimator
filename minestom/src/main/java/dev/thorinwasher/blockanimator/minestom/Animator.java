@@ -1,7 +1,7 @@
 package dev.thorinwasher.blockanimator.minestom;
 
-import dev.thorinwasher.blockanimator.Animation;
-import dev.thorinwasher.blockanimator.AnimationFrame;
+import dev.thorinwasher.blockanimator.animation.Animation;
+import dev.thorinwasher.blockanimator.animation.AnimationFrame;
 import dev.thorinwasher.blockanimator.algorithms.ManhatanNearest;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;

@@ -1,7 +1,7 @@
 package dev.thorinwasher.blockanimator.paper.handle;
 
-import dev.thorinwasher.blockanimator.Animation;
-import dev.thorinwasher.blockanimator.AnimationFrame;
+import dev.thorinwasher.blockanimator.animation.Animation;
+import dev.thorinwasher.blockanimator.animation.AnimationFrame;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Location;
@@ -10,7 +10,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
-import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.Map;

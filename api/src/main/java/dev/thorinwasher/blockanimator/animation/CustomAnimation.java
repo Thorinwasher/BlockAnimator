@@ -1,4 +1,4 @@
-package dev.thorinwasher.blockanimator;
+package dev.thorinwasher.blockanimator.animation;
 
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveAnimation;
 import dev.thorinwasher.blockanimator.blockanimations.CompiledBlockMoveAnimation;
@@ -9,12 +9,10 @@ import dev.thorinwasher.blockanimator.timer.BlockTimer;
 import dev.thorinwasher.blockanimator.timer.CompiledBlockTimer;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
-public class Animation<B> {
+public class CustomAnimation<B> implements Animation<B> {
 
     private final BlockMoveAnimation blockMoveAnimation;
     private final BlockSupplier<B> blockSupplier;
@@ -27,8 +25,8 @@ public class Animation<B> {
     private AtomicInteger currentCompiledFrame = new AtomicInteger();
     private final int framesBuffer;
 
-    public Animation(BlockSelector blockSelector, BlockMoveAnimation blockMoveAnimation,
-                     BlockSupplier<B> blockSupplier, BlockTimer blockTimer, int framesBuffer) {
+    public CustomAnimation(BlockSelector blockSelector, BlockMoveAnimation blockMoveAnimation,
+                           BlockSupplier<B> blockSupplier, BlockTimer blockTimer, int framesBuffer) {
         this.blockSelector = blockSelector;
         this.blockMoveAnimation = blockMoveAnimation;
         this.blockSupplier = blockSupplier;
@@ -36,9 +34,7 @@ public class Animation<B> {
         this.framesBuffer = framesBuffer;
     }
 
-    /**
-     * HAS TO BE RUN ASYNC!
-     */
+    @Override
     public void compile() {
         try {
             CompiledBlockSelector blockSelector = this.blockSelector.compile(blockSupplier.getPositions());
@@ -47,9 +43,9 @@ public class Animation<B> {
                 for (int count = 0; count < fetchAmount; count++) {
                     Vector3D target = blockSelector.next();
                     CompiledBlockMoveAnimation compiledBlockMoveAnimation = blockMoveAnimation.compile(target);
-                    mergeBlockAnimationToFrames(compiledBlockMoveAnimation, target, currentCompiledFrame.get());
+                    Animation.mergeBlockAnimationToFrames(compiledBlockMoveAnimation, frames, target, currentCompiledFrame.get());
                 }
-                if (currentCompiledFrame.incrementAndGet() > currentFrame.get() + 40) {
+                if (currentCompiledFrame.incrementAndGet() > currentFrame.get() + framesBuffer * 2) {
                     Thread.sleep(50);
                 }
             }
@@ -59,18 +55,12 @@ public class Animation<B> {
         }
     }
 
+    @Override
     public AnimationFrame getNext() {
         return frames.remove(currentFrame.getAndIncrement());
     }
 
-    private void mergeBlockAnimationToFrames(CompiledBlockMoveAnimation
-                                                     compiledBlockMoveAnimation, Vector3D target, int frame) {
-        for (Vector3D newPosition : compiledBlockMoveAnimation.frames()) {
-            frames.computeIfAbsent(frame, ignored -> new AnimationFrame(new HashMap<>())).currentToDestination().put(target, newPosition);
-            frame++;
-        }
-    }
-
+    @Override
     public AnimationStatus getStatus() {
         if (compileCompleted && frames.isEmpty()) {
             return AnimationStatus.COMPLETED;
@@ -82,13 +72,8 @@ public class Animation<B> {
         }
     }
 
+    @Override
     public BlockSupplier<B> supplier() {
         return blockSupplier;
-    }
-
-    public enum AnimationStatus {
-        COMPLETED,
-        READY_FOR_ANIMATION,
-        NOT_READY_FOR_ANIMATION
     }
 }

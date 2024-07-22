@@ -1,4 +1,4 @@
-package dev.thorinwasher.blockanimator;
+package dev.thorinwasher.blockanimator.animation;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
