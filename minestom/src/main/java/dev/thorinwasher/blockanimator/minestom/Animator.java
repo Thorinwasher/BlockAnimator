@@ -3,7 +3,6 @@ package dev.thorinwasher.blockanimator.minestom;
 import dev.thorinwasher.blockanimator.algorithms.ManhatanNearest;
 import dev.thorinwasher.blockanimator.animation.Animation;
 import dev.thorinwasher.blockanimator.animation.AnimationFrame;
-import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
@@ -77,13 +76,6 @@ public class Animator {
         Vec delta = to.sub(current).asVec();
         BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
         blockDisplayMeta.setTranslation(delta);
-    }
-
-    private boolean blockIsApplicable(Point pos) {
-        if (!instance.getBlock(pos).isAir()) {
-            return false;
-        }
-        return !blockEntityMap.containsKey(new Vector3D(pos.blockX(), pos.blockY(), pos.blockZ()));
     }
 
     public void addOnCompletion(Runnable runnable) {

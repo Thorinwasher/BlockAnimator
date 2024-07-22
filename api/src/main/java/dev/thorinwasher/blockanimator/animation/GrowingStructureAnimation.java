@@ -86,11 +86,7 @@ public class GrowingStructureAnimation<B> implements Animation<B> {
 
     @Override
     public AnimationFrame getNext() {
-        if(frames.get(currentFrame.get()) == null){
-            System.out.println("frame was null");
-        }
-        AnimationFrame frame = frames.remove(currentFrame.getAndIncrement());
-        return frame;
+        return frames.remove(currentFrame.getAndIncrement());
     }
 
     @Override
@@ -98,7 +94,9 @@ public class GrowingStructureAnimation<B> implements Animation<B> {
         if (compileCompleted && frames.isEmpty()) {
             return AnimationStatus.COMPLETED;
         }
-        if (buffer < currentCompiledFrame.get() || compileCompleted) {
+        int currentCompiled = currentCompiledFrame.get();
+        int current = currentFrame.get();
+        if ((buffer < currentCompiled && currentCompiled > current + 1) || compileCompleted) {
             return AnimationStatus.READY_FOR_ANIMATION;
         } else {
             return AnimationStatus.NOT_READY_FOR_ANIMATION;

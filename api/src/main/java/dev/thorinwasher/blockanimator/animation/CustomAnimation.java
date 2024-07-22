@@ -65,7 +65,9 @@ public class CustomAnimation<B> implements Animation<B> {
         if (compileCompleted && frames.isEmpty()) {
             return AnimationStatus.COMPLETED;
         }
-        if (framesBuffer < currentCompiledFrame.get() || compileCompleted) {
+        int currentCompiled = currentCompiledFrame.get();
+        int current = currentFrame.get();
+        if ((framesBuffer < currentCompiled && currentCompiled > current + 1) || compileCompleted) {
             return AnimationStatus.READY_FOR_ANIMATION;
         } else {
             return AnimationStatus.NOT_READY_FOR_ANIMATION;
