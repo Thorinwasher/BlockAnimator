@@ -12,6 +12,7 @@ import net.minestom.server.entity.metadata.display.BlockDisplayMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,7 @@ public class Animator {
     private final Animation<Block> animation;
     private final Instance instance;
     private final Map<Vector3D, Entity> blockEntityMap = new HashMap<>();
+    private @Nullable Runnable onCompletion;
 
     public Animator(Animation<Block> animation, Instance instance) {
         this.animation = animation;
@@ -29,7 +31,12 @@ public class Animator {
     }
 
     public void nextTick() {
-        if (animation.getStatus() != Animation.AnimationStatus.READY_FOR_ANIMATION) {
+        Animation.AnimationStatus status = animation.getStatus();
+        if (status == Animation.AnimationStatus.COMPLETED) {
+            Optional.ofNullable(onCompletion).ifPresent(Runnable::run);
+            return;
+        }
+        if (status == Animation.AnimationStatus.NOT_READY_FOR_ANIMATION) {
             return;
         }
         AnimationFrame frame = animation.getNext();
@@ -47,7 +54,7 @@ public class Animator {
                         vector3D -> instance.getBlock(toPos(vector3D)).isAir(), 5);
                 Pos spawnPos = middlePoint
                         .map(this::toPos)
-                                .orElse(to);
+                        .orElse(to);
                 blockDisplay.setInstance(instance, spawnPos);
                 blockEntityMap.put(entry.getKey(), blockDisplay);
             }
@@ -77,5 +84,9 @@ public class Animator {
             return false;
         }
         return !blockEntityMap.containsKey(new Vector3D(pos.blockX(), pos.blockY(), pos.blockZ()));
+    }
+
+    public void addOnCompletion(Runnable runnable) {
+        this.onCompletion = runnable;
     }
 }

@@ -15,6 +15,7 @@ import net.minestom.server.coordinate.BlockVec;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
@@ -48,7 +49,8 @@ public class SpecialAnimateCommand extends Command {
             Thread thread = new Thread(animation::compile);
             thread.start();
             Animator animator = new Animator(animation, player.getInstance());
-            MinecraftServer.getSchedulerManager().scheduleTask(animator::nextTick, TaskSchedule.immediate(), TaskSchedule.tick(1));
+            Task timer = MinecraftServer.getSchedulerManager().scheduleTask(animator::nextTick, TaskSchedule.immediate(), TaskSchedule.tick(1));
+            animator.addOnCompletion(timer::cancel);
         }, specialType, generateWidth);
     }
 }
