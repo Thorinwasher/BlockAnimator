@@ -5,6 +5,7 @@ import dev.thorinwasher.blockanimator.blockanimations.CompiledBlockMoveAnimation
 import dev.thorinwasher.blockanimator.container.TwoTuple;
 import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +17,10 @@ public interface Animation<B> {
      */
     void compile();
 
+    @ApiStatus.Internal
     AnimationFrame getNext();
 
+    @ApiStatus.Internal
     static void mergeBlockAnimationToFrames(CompiledBlockMoveAnimation
                                                     compiledBlockMoveAnimation, Map<Integer, AnimationFrame> frames, Vector3D target, int frame) {
         for (TwoTuple<Vector3D, BlockMoveType> newPosition : compiledBlockMoveAnimation.frames()) {
@@ -26,13 +29,15 @@ public interface Animation<B> {
         }
     }
 
+    @ApiStatus.Internal
     AnimationStatus getStatus();
-
+    
+    @ApiStatus.Internal
     BlockSupplier<B> supplier();
 
     enum AnimationStatus {
         COMPLETED,
         READY_FOR_ANIMATION,
-        NOT_READY_FOR_ANIMATION
+        COMPILING_TO_BUFFER
     }
 }

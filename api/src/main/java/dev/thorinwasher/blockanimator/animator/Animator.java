@@ -29,7 +29,7 @@ public class Animator<B> {
             blockAnimator.finishAnimation(animation.supplier());
             return true;
         }
-        if (status == Animation.AnimationStatus.NOT_READY_FOR_ANIMATION) {
+        if (status == Animation.AnimationStatus.COMPILING_TO_BUFFER) {
             return false;
         }
         AnimationFrame frame = animation.getNext();

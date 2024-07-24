@@ -70,7 +70,7 @@ public class CustomAnimation<B> implements Animation<B> {
         if ((framesBuffer < currentCompiled && currentCompiled > current + 1) || compileCompleted) {
             return AnimationStatus.READY_FOR_ANIMATION;
         } else {
-            return AnimationStatus.NOT_READY_FOR_ANIMATION;
+            return AnimationStatus.COMPILING_TO_BUFFER;
         }
     }
 
