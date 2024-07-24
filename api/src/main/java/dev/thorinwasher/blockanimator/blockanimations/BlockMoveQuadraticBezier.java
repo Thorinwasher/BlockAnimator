@@ -2,6 +2,7 @@ package dev.thorinwasher.blockanimator.blockanimations;
 
 import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.FixedStepsPathCompletionSupplier;
 import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.PathCompletionSupplier;
+import dev.thorinwasher.blockanimator.container.TwoTuple;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.ArrayList;
@@ -44,28 +45,28 @@ public class BlockMoveQuadraticBezier implements BlockMoveAnimation {
 
     private static double bezierCurveLength(Vector3D from, Vector3D to, Vector3D controlPoint) {
         List<Double> steps = new FixedStepsPathCompletionSupplier(20).compile(1D);
-        List<Vector3D> bezierCurve = calculateBezierCurve(from, to, controlPoint, steps);
+        List<TwoTuple<Vector3D, BlockMoveType>> bezierCurve = calculateBezierCurve(from, to, controlPoint, steps);
         Vector3D previous = null;
         double length = 0;
-        for (Vector3D point : bezierCurve) {
+        for (TwoTuple<Vector3D, BlockMoveType> point : bezierCurve) {
             if (previous != null) {
-                length += previous.distance(point);
+                length += previous.distance(point.first());
             }
-            previous = point;
+            previous = point.first();
         }
         return length;
     }
 
-    private static List<Vector3D> calculateBezierCurve(Vector3D from, Vector3D to, Vector3D controlPoint, List<Double> steps) {
-        List<Vector3D> bezierCurve = new ArrayList<>(steps.size());
+    private static List<TwoTuple<Vector3D, BlockMoveType>> calculateBezierCurve(Vector3D from, Vector3D to, Vector3D controlPoint, List<Double> steps) {
+        List<TwoTuple<Vector3D, BlockMoveType>> bezierCurve = new ArrayList<>(steps.size());
         for (double time : steps) {
             double A = Math.pow(1 - time, 2);
             double B = 2 * (1 - time) * time;
             double C = Math.pow(time, 2);
             Vector3D vectorPoint = from.scalarMultiply(A).add(controlPoint.scalarMultiply(B)).add(to.scalarMultiply(C));
-            bezierCurve.add(vectorPoint);
+            bezierCurve.add(new TwoTuple<>(vectorPoint, BlockMoveType.MOVE));
         }
-        bezierCurve.add(to);
+        bezierCurve.add(new TwoTuple<>(to, BlockMoveType.PLACE));
         return bezierCurve;
     }
 }

@@ -2,17 +2,16 @@ package dev.thorinwasher.blockanimator.minestomtest.command;
 
 import dev.thorinwasher.blockanimator.animation.Animation;
 import dev.thorinwasher.blockanimator.animation.GrowingStructureAnimation;
+import dev.thorinwasher.blockanimator.animator.Animator;
 import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
-import dev.thorinwasher.blockanimator.minestom.Animator;
-import dev.thorinwasher.blockanimator.minestom.VectorConversion;
+import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.PathCompletionSupplier;
+import dev.thorinwasher.blockanimator.minestom.PlaceBlocksAfterBlockAnimator;
 import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.arguments.ArgumentWord;
 import net.minestom.server.command.builder.arguments.number.ArgumentInteger;
-import net.minestom.server.coordinate.BlockVec;
-import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.timer.Task;
@@ -36,19 +35,18 @@ public class SpecialAnimateCommand extends Command {
             if (!(sender instanceof Player player)) {
                 throw new IllegalArgumentException("Only players can execute this command!");
             }
-            Pos corner = player.getPosition().add(20, 0, 0);
             BlockSupplier<Block> blockSupplier = BlockSupplierUtil.getBlockSupplier(player, context.get(generateWidth));
             List<Vector3D> positions = blockSupplier.getPositions();
             Vector3D startingBlock = positions.get(RANDOM.nextInt(positions.size()));
+            PathCompletionSupplier pathCompletionSupplier = new EaseOutCubicPathCompletionSupplier(0.05);
             Animation<Block> animation = switch (context.get(specialType)) {
-                case "growing" ->
-                        new GrowingStructureAnimation<>(blockSupplier, startingBlock,
-                                new EaseOutCubicPathCompletionSupplier(0.05), 100);
+                case "growing" -> new GrowingStructureAnimation<>(blockSupplier, startingBlock,
+                        pathCompletionSupplier, 100);
                 default -> throw new IllegalArgumentException();
             };
             Thread thread = new Thread(animation::compile);
             thread.start();
-            Animator animator = new Animator(animation, player.getInstance());
+            Animator<Block> animator = new Animator<>(animation, new PlaceBlocksAfterBlockAnimator(1000, player.getInstance()));
             Task timer = MinecraftServer.getSchedulerManager().scheduleTask(animator::nextTick, TaskSchedule.immediate(), TaskSchedule.tick(1));
             animator.addOnCompletion(timer::cancel);
         }, specialType, generateWidth);

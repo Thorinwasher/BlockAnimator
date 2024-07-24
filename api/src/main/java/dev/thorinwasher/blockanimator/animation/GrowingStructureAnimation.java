@@ -3,8 +3,10 @@ package dev.thorinwasher.blockanimator.animation;
 import dev.thorinwasher.blockanimator.algorithms.ManhatanNearest;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveAnimation;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveLinear;
+import dev.thorinwasher.blockanimator.blockanimations.BlockMoveType;
 import dev.thorinwasher.blockanimator.blockanimations.CompiledBlockMoveAnimation;
 import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.PathCompletionSupplier;
+import dev.thorinwasher.blockanimator.container.TwoTuple;
 import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
@@ -44,7 +46,7 @@ public class GrowingStructureAnimation<B> implements Animation<B> {
         try {
             Set<Vector3D> blocksLeft = new HashSet<>(blockSupplier.getPositions());
             BlockMoveAnimation blockMoveAnimation = new BlockMoveLinear(this::getBlockFrom, pathCompletionSupplier);
-            frames.computeIfAbsent(0, ignored -> new AnimationFrame(new HashMap<>())).currentToDestination().put(startingPoint, startingPoint);
+            frames.computeIfAbsent(0, ignored -> new AnimationFrame(new HashMap<>())).currentToDestination().put(startingPoint, new TwoTuple<>(startingPoint, BlockMoveType.PLACE));
             placedBlocks.add(startingPoint);
 
             while (!blocksLeft.isEmpty()) {

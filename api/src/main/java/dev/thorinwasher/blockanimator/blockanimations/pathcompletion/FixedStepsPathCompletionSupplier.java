@@ -18,6 +18,7 @@ public class FixedStepsPathCompletionSupplier implements PathCompletionSupplier 
         for (int step = 0; step < this.steps; step++) {
             steps.add(stepLength * step / pathLength);
         }
+        steps.add(1D);
         return steps;
     }
 }

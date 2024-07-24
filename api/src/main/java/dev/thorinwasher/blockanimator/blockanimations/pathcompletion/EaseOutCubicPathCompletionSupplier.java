@@ -19,6 +19,7 @@ public class EaseOutCubicPathCompletionSupplier implements PathCompletionSupplie
             double pathCompletion = (double) step / steps;
             output.add(1 - Math.pow(1 - pathCompletion, 3));
         }
+        output.add(1D);
         return output;
     }
 
