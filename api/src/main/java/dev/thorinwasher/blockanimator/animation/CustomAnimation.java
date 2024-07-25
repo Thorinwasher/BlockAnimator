@@ -6,9 +6,9 @@ import dev.thorinwasher.blockanimator.selector.BlockSelector;
 import dev.thorinwasher.blockanimator.selector.CompiledBlockSelector;
 import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.timer.BlockTimer;
-import dev.thorinwasher.blockanimator.timer.CompiledBlockTimer;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,11 +37,11 @@ public class CustomAnimation<B> implements Animation<B> {
     @Override
     public void compile() {
         try {
-            CompiledBlockSelector blockSelector = this.blockSelector.compile(blockSupplier.getPositions());
-            CompiledBlockTimer blockTimer = this.blockTimer.compile(blockSupplier.getPositions().size());
-            for (int fetchAmount : blockTimer.frames()) {
-                for (int count = 0; count < fetchAmount; count++) {
-                    Vector3D target = blockSelector.next();
+            List<Vector3D> totalBlocks = blockSupplier.getPositions();
+            int totalBlockAmount = totalBlocks.size();
+            CompiledBlockSelector blockSelector = this.blockSelector.compile(totalBlocks);
+            while (blockTimer.hasNext(totalBlockAmount)) {
+                for (Vector3D target : blockTimer.fetch(blockSelector, totalBlockAmount)) {
                     CompiledBlockMoveAnimation compiledBlockMoveAnimation = blockMoveAnimation.compile(target);
                     Animation.mergeBlockAnimationToFrames(compiledBlockMoveAnimation, frames, target, currentCompiledFrame.get());
                 }

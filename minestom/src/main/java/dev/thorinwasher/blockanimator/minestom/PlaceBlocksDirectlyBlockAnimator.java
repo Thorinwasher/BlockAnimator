@@ -1,5 +1,6 @@
 package dev.thorinwasher.blockanimator.minestom;
 
+import dev.thorinwasher.blockanimator.algorithms.ManhatanNearest;
 import dev.thorinwasher.blockanimator.animator.BlockAnimator;
 import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
 import net.minestom.server.coordinate.Pos;
@@ -12,6 +13,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
 
@@ -33,9 +35,11 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
 
     @Override
     public void blockPlace(Vector3D identifier, BlockSupplier<Block> supplier) {
-        Entity blockDisplay = blockEntityMap.get(identifier);
-        blockDisplay.remove();
-        blockDisplay.getInstance().setBlock(VectorConversion.toVec(identifier), supplier.getBlock(identifier));
+        Entity blockDisplay = blockEntityMap.remove(identifier);
+        if (blockDisplay != null) {
+            blockDisplay.remove();
+        }
+        instance.setBlock(VectorConversion.toVec(identifier), supplier.getBlock(identifier));
     }
 
     @Override
@@ -47,8 +51,9 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
         Entity blockDisplay = blockEntityMap.get(identifier);
         if (blockDisplay == null) {
             Block block = blockSupplier.getBlock(identifier);
-            Vector3D position = identifier.scalarMultiply(0.5).add(startingPosition.scalarMultiply(0.5));
-            blockDisplay = BlockAnimationUtils.spawnBlockDisplay(position, block, instance);
+            Vector3D middlePoint = identifier.scalarMultiply(0.5).add(startingPosition.scalarMultiply(0.5));
+            Optional<Vector3D> position = ManhatanNearest.findClosestPosition(middlePoint, vector3D -> instance.getBlock(VectorConversion.toVec(vector3D)).isAir(), 10);
+            blockDisplay = BlockAnimationUtils.spawnBlockDisplay(position.orElse(startingPosition), block, instance);
             blockEntityMap.put(identifier, blockDisplay);
         }
         return blockDisplay;

@@ -9,14 +9,13 @@ import dev.thorinwasher.blockanimator.blockanimations.BlockMoveQuadraticBezier;
 import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
 import dev.thorinwasher.blockanimator.minestom.PlaceBlocksAfterBlockAnimator;
 import dev.thorinwasher.blockanimator.minestomtest.Main;
-import dev.thorinwasher.blockanimator.selector.BlockSelector;
-import dev.thorinwasher.blockanimator.selector.BottomFirstSelector;
-import dev.thorinwasher.blockanimator.selector.RandomSpherical;
+import dev.thorinwasher.blockanimator.selector.*;
 import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.timer.BlockTimer;
 import dev.thorinwasher.blockanimator.timer.LinearBlockTimer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentEnum;
 import net.minestom.server.command.builder.arguments.ArgumentWord;
 import net.minestom.server.command.builder.arguments.number.ArgumentInteger;
 import net.minestom.server.entity.Player;
@@ -28,8 +27,12 @@ public class AnimateCommand extends Command {
     public AnimateCommand() {
         super("animate");
 
+        setDefaultExecutor((sender, context) -> {
+            sender.sendMessage("animate <motion> <selector> <size> <time>");
+        });
+
         ArgumentWord motion = new ArgumentWord("motion").from("linear", "quadratic");
-        ArgumentWord selector = new ArgumentWord("selector").from("random_spherical", "bottom_first");
+        ArgumentEnum<BlockSelectorType> selector = new ArgumentEnum<>("selector", BlockSelectorType.class).setFormat(ArgumentEnum.Format.LOWER_CASED);
         ArgumentInteger size = new ArgumentInteger("size");
         ArgumentInteger time = new ArgumentInteger("time");
         addSyntax(((sender, context) -> {
@@ -46,9 +49,10 @@ public class AnimateCommand extends Command {
             BlockSupplier<Block> blockSupplier = BlockSupplierUtil.getBlockSupplier(player, context.get(size));
             BlockTimer blockTimer = new LinearBlockTimer(context.get(time));
             BlockSelector blockSelector = switch (context.get(selector)) {
-                case "random_spherical" -> new RandomSpherical();
-                case "bottom_first" -> new BottomFirstSelector();
-                default -> throw new IllegalArgumentException("Unknown block selector");
+                case RANDOM_SPHERICAL -> new RandomSpherical();
+                case BOTTOM_FIRST -> new BottomFirstSelector();
+                case LAYERED_BOTTOM_FIRST -> new LayeredBottomFirst();
+                case DENDRITE -> new GrowingDendriteSelector(0.2);
             };
             Animation<Block> animation = new CustomAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
             Thread thread = new Thread(animation::compile);

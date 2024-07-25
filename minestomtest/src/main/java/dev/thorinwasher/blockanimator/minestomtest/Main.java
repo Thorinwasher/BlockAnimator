@@ -2,7 +2,7 @@ package dev.thorinwasher.blockanimator.minestomtest;
 
 import dev.thorinwasher.blockanimator.minestomtest.command.AnimateCommand;
 import dev.thorinwasher.blockanimator.minestomtest.command.LoadSchemCommand;
-import dev.thorinwasher.blockanimator.minestomtest.command.SpecialAnimateCommand;
+import dev.thorinwasher.blockanimator.minestomtest.command.SequentialAnimateCommand;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Point;
@@ -28,7 +28,7 @@ public class Main {
             event.getPlayer().setGameMode(GameMode.CREATIVE);
         });
         CommandManager commandManager = MinecraftServer.getCommandManager();
-        commandManager.register(new SpecialAnimateCommand());
+        commandManager.register(new SequentialAnimateCommand());
         commandManager.register(new AnimateCommand());
         commandManager.register(new LoadSchemCommand());
 

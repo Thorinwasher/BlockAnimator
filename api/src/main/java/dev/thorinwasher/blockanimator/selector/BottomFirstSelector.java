@@ -13,6 +13,6 @@ public class BottomFirstSelector implements BlockSelector {
     public CompiledBlockSelector compile(List<Vector3D> blocks) {
         List<Vector3D> output = new ArrayList<>(blocks);
         output.sort(Comparator.comparingDouble(Vector3D::getY));
-        return new CompiledBlockSelector(new LinkedList<>(output));
+        return new CompiledBlockSelector(new LinkedList<>(output.stream().map(List::of).toList()));
     }
 }
