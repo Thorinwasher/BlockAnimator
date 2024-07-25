@@ -53,6 +53,7 @@ public class AnimateCommand extends Command {
                 case BOTTOM_FIRST -> new BottomFirstSelector();
                 case LAYERED_BOTTOM_FIRST -> new LayeredBottomFirst();
                 case DENDRITE -> new GrowingDendriteSelector(0.2);
+                case GROWING -> new GrowingSelector();
             };
             Animation<Block> animation = new CustomAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
             Thread thread = new Thread(animation::compile);

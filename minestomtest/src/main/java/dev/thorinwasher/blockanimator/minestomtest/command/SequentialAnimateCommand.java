@@ -45,6 +45,7 @@ public class SequentialAnimateCommand extends Command {
                 case BOTTOM_FIRST -> new BottomFirstSelector();
                 case LAYERED_BOTTOM_FIRST -> new LayeredBottomFirst();
                 case RANDOM_SPHERICAL -> new RandomSpherical();
+                case GROWING -> new GrowingSelector();
             };
             Animation<Block> animation = new SequentialAnimation<>(blockSupplier, pathCompletionSupplier, blockSelector, 200);
             Thread thread = new Thread(animation::compile);

@@ -1,5 +1,6 @@
 package dev.thorinwasher.blockanimator.selector;
 
+import dev.thorinwasher.blockanimator.util.Directions;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.*;
@@ -7,7 +8,6 @@ import java.util.*;
 public class GrowingDendriteSelector implements BlockSelector {
 
     private static final Random RANDOM = new Random();
-    private static final List<Vector3D> DIRECTIONS = getDirections();
     private final double growthDirectionAddChance;
     private final Map<Vector3D, Set<Vector3D>> growthMap = new HashMap<>();
 
@@ -38,8 +38,8 @@ public class GrowingDendriteSelector implements BlockSelector {
                     growthMap.put(growth, new HashSet<>(Set.of(direction)));
                 }
             }
-            if (RANDOM.nextDouble() < growthDirectionAddChance && entry.getValue().size() < DIRECTIONS.size()) {
-                List<Vector3D> possibleDirectionsToAdd = new ArrayList<>(DIRECTIONS);
+            if (RANDOM.nextDouble() < growthDirectionAddChance && entry.getValue().size() < Directions.DIRECTIONS.size()) {
+                List<Vector3D> possibleDirectionsToAdd = new ArrayList<>(Directions.DIRECTIONS);
                 possibleDirectionsToAdd.removeAll(entry.getValue());
                 growthMap.get(entry.getKey()).add(possibleDirectionsToAdd.get(RANDOM.nextInt(possibleDirectionsToAdd.size())));
             }
@@ -55,16 +55,7 @@ public class GrowingDendriteSelector implements BlockSelector {
 
     private List<Vector3D> newStartingSeed(List<Vector3D> blocks) {
         Vector3D startingPoint = blocks.get(RANDOM.nextInt(blocks.size()));
-        growthMap.put(startingPoint, new HashSet<>(DIRECTIONS));
+        growthMap.put(startingPoint, new HashSet<>(Directions.DIRECTIONS));
         return new ArrayList<>(List.of(startingPoint));
-    }
-
-    private static List<Vector3D> getDirections() {
-        return List.of(new Vector3D(1, 0, 0),
-                new Vector3D(-1, 0, 0),
-                new Vector3D(0, 1, 0),
-                new Vector3D(0, -1, 0),
-                new Vector3D(0, 0, 1),
-                new Vector3D(0, 0, -1));
     }
 }

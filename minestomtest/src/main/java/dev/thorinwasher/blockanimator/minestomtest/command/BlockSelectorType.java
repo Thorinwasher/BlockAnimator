@@ -4,6 +4,6 @@ public enum BlockSelectorType {
     DENDRITE,
     BOTTOM_FIRST,
     LAYERED_BOTTOM_FIRST,
-    RANDOM_SPHERICAL
-
+    RANDOM_SPHERICAL,
+    GROWING
 }
