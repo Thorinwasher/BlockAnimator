@@ -72,6 +72,7 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockState> {
         FallingBlock fallingBlock = fallingBlocks.get(identifier);
         if (fallingBlock == null) {
             fallingBlock = EntityUtils.spawnFallingBlock(world, blockSupplier.getBlock(identifier), position);
+            fallingBlocks.put(identifier, fallingBlock);
         }
         return fallingBlock;
     }

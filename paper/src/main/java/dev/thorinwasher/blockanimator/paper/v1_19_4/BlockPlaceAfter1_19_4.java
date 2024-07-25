@@ -5,7 +5,6 @@ import dev.thorinwasher.blockanimator.paper.EntityUtils;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
 import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
@@ -31,9 +30,7 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockState> {
     @Override
     public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockState> blockSupplier) {
         BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, to, blockSupplier);
-        Location current = blockDisplay.getLocation();
-        Vector delta = VectorConverter.toLocation(to, world).subtract(current).toVector();
-        blockDisplay.setVelocity(delta);
+        blockDisplay.teleport(VectorConverter.toLocation(to, world));
     }
 
     @Override
@@ -42,7 +39,7 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockState> {
         blockDisplay.teleport(VectorConverter.toLocation(identifier, world));
         blockDisplay.setVelocity(new Vector());
         entitiesToRemove.add(identifier);
-        if (entitiesToRemove.size() < maxEntities) {
+        if (entitiesToRemove.size() > maxEntities) {
             finishAnimation(blockSupplier);
         }
     }
@@ -59,12 +56,14 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockState> {
             blockDisplay.remove();
             blockSupplier.getBlock(identifier).update(true, false);
         });
+        entitiesToRemove.clear();
     }
 
     private BlockDisplay getOrSpawnBlockDisplay(Vector3D identifier, Vector3D position, BlockSupplier<BlockState> blockSupplier) {
         BlockDisplay blockDisplay = blockDisplays.get(identifier);
         if (blockDisplay == null) {
             blockDisplay = EntityUtils.spawnBLockDisplay(world, blockSupplier.getBlock(identifier), position);
+            blockDisplays.put(identifier, blockDisplay);
         }
         return blockDisplay;
     }

@@ -18,7 +18,7 @@ public class TestSupplier implements BlockSupplier<BlockState> {
     public TestSupplier(Material material, int size, Location corner) {
         this.material = material;
         this.size = size;
-        this.corner = corner.getBlock().getLocation().add(0.5, 0, 0.5); // Go to block coordinates (lazy)
+        this.corner = corner.toBlockLocation();
     }
 
 

@@ -38,7 +38,9 @@ public class BlockPlaceDirectly1_19_4 implements BlockAnimator<BlockState> {
     @Override
     public void blockPlace(Vector3D identifier, BlockSupplier<BlockState> blockSupplier) {
         BlockDisplay blockDisplay = blockDisplays.remove(identifier);
-        blockDisplay.remove();
+        if (blockDisplay != null) {
+            blockDisplay.remove();
+        }
         blockSupplier.getBlock(identifier).update(true, false);
     }
 
@@ -59,6 +61,7 @@ public class BlockPlaceDirectly1_19_4 implements BlockAnimator<BlockState> {
                     identifier.scalarMultiply(0.5).add(startingPos.scalarMultiply(0.5)),
                     vector3D -> VectorConverter.toLocation(vector3D, world).getBlock().getType().isAir(), 5);
             blockDisplay = EntityUtils.spawnBLockDisplay(world, blockSupplier.getBlock(identifier), middlePoint.orElse(startingPos));
+            blockDisplays.put(identifier, blockDisplay);
         }
         return blockDisplay;
     }
