@@ -3,7 +3,10 @@ on:
   push:
     branches: [main]
 jobs:
-  versioning:
+  publish:
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -13,12 +16,6 @@ jobs:
         with:
           main_branch: main
           create_tag: true
-  publish:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
