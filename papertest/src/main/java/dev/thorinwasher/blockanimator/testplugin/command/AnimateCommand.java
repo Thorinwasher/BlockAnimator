@@ -1,7 +1,7 @@
 package dev.thorinwasher.blockanimator.testplugin.command;
 
 import dev.thorinwasher.blockanimator.animation.Animation;
-import dev.thorinwasher.blockanimator.animation.CustomAnimation;
+import dev.thorinwasher.blockanimator.animation.TimerAnimation;
 import dev.thorinwasher.blockanimator.animator.Animator;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveAnimation;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveLinear;
@@ -44,7 +44,7 @@ public class AnimateCommand implements CommandExecutor {
         BlockSupplier<BlockState> blockSupplier = new TestSupplier(Material.DIAMOND_BLOCK, Integer.parseInt(args[1]), player.getLocation().add(player.getFacing().getDirection().multiply(20)));
         BlockTimer blockTimer = new LinearBlockTimer(Integer.parseInt(args[2]));
         BlockSelector blockSelector = new RandomSpherical();
-        Animation<BlockState> animation = new CustomAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
+        Animation<BlockState> animation = new TimerAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
         Animator<BlockState> animator = new Animator<>(animation, new PlaceBlocksDirectlyBlockAnimator(player.getWorld()));
         Bukkit.getScheduler().runTaskAsynchronously(plugin, animation::compile);
         Bukkit.getScheduler().runTaskTimer(plugin, (task) -> {

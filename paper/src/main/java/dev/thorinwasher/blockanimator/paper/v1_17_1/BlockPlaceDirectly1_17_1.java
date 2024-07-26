@@ -40,9 +40,10 @@ public class BlockPlaceDirectly1_17_1 implements BlockAnimator<BlockState> {
 
     @Override
     public void blockPlace(Vector3D identifier, BlockSupplier<BlockState> blockSupplier) {
-        FallingBlock fallingBlock = spawnOrGetFallingBlock(identifier, identifier, blockSupplier);
-        fallingBlock.remove();
-        fallingBlocks.remove(identifier);
+        FallingBlock fallingBlock = fallingBlocks.remove(identifier);
+        if (fallingBlock != null) {
+            fallingBlock.remove();
+        }
         BlockState blockState = blockSupplier.getBlock(identifier);
         blockState.update(true, false);
     }

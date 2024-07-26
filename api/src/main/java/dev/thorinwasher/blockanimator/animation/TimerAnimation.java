@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CustomAnimation<B> implements Animation<B> {
+public class TimerAnimation<B> implements Animation<B> {
 
     private final BlockMoveAnimation blockMoveAnimation;
     private final BlockSupplier<B> blockSupplier;
@@ -25,8 +25,8 @@ public class CustomAnimation<B> implements Animation<B> {
     private AtomicInteger currentCompiledFrame = new AtomicInteger();
     private final int framesBuffer;
 
-    public CustomAnimation(BlockSelector blockSelector, BlockMoveAnimation blockMoveAnimation,
-                           BlockSupplier<B> blockSupplier, BlockTimer blockTimer, int framesBuffer) {
+    public TimerAnimation(BlockSelector blockSelector, BlockMoveAnimation blockMoveAnimation,
+                          BlockSupplier<B> blockSupplier, BlockTimer blockTimer, int framesBuffer) {
         this.blockSelector = blockSelector;
         this.blockMoveAnimation = blockMoveAnimation;
         this.blockSupplier = blockSupplier;

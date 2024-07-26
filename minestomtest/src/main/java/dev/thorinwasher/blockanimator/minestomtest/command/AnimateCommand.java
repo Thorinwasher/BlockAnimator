@@ -1,7 +1,7 @@
 package dev.thorinwasher.blockanimator.minestomtest.command;
 
 import dev.thorinwasher.blockanimator.animation.Animation;
-import dev.thorinwasher.blockanimator.animation.CustomAnimation;
+import dev.thorinwasher.blockanimator.animation.TimerAnimation;
 import dev.thorinwasher.blockanimator.animator.Animator;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveAnimation;
 import dev.thorinwasher.blockanimator.blockanimations.BlockMoveLinear;
@@ -55,7 +55,7 @@ public class AnimateCommand extends Command {
                 case DENDRITE -> new GrowingDendriteSelector(0.2);
                 case GROWING -> new GrowingSelector();
             };
-            Animation<Block> animation = new CustomAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
+            Animation<Block> animation = new TimerAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
             Thread thread = new Thread(animation::compile);
             thread.start();
             Animator<Block> animator = new Animator<>(animation, new PlaceBlocksAfterBlockAnimator(1000, player.getInstance()));
