@@ -13,6 +13,9 @@ jobs:
       - name: calculate version
         id: calculate-version
         uses: bitshifted/git-auto-semver@v1.1.0
+        with:
+          main_branch: main
+          create_tag: true
       - uses: actions/setup-java@v4
         with:
           java-version: '21'
