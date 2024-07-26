@@ -1,5 +1,5 @@
 # Project status
-The project is currently in late prototype stage. I Will find a way on how to publish this to a repository and so on  later on.
+This project is still in early development, expect issues and don't use in production.
 
 # How to import
 Firstly you need to add the repository used by this project:
