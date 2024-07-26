@@ -1,0 +1,45 @@
+name: Publish package to GitHub Packages
+on:
+  release:
+    types: [created]
+jobs:
+  versioning:
+    runs-on: ubuntu-latest
+    steps:
+      - name: calculate version
+        id: calculate-version
+        uses: bitshifted/git-auto-semver@v1
+        with:
+          main_branch: main
+          create_tag: true
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda # v3.4.2
+
+      - name: Publish block animation API
+        run: ./gradlew :api:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.calculate-version.outputs.version-string }}
+
+      - name: Publish paper block animation API
+        run: ./gradlew :paper:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.calculate-version.outputs.version-string }}
+
+      - name: Publish minestom block animation API
+        run: ./gradlew :minestom:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.calculate-version.outputs.version-string }}

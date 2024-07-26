@@ -1,10 +1,11 @@
+
 plugins {
     id("java")
     id("maven-publish")
 }
 
 group = properties["groupId"]!!
-version = properties["projectVersion"]!!
+version = System.getenv("VERSION")?: "development"
 
 repositories {
     mavenCentral()

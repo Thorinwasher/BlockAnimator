@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.thorinwasher"
-version = properties["projectVersion"]!!
+version = System.getenv("VERSION")?: "development"
 
 repositories {
     mavenCentral()

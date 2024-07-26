@@ -4,7 +4,7 @@ plugins {
 }
 
 group = properties["groupId"]!!
-version = properties["projectVersion"]!!
+version = System.getenv("VERSION")?: "development"
 
 repositories {
     mavenCentral()
@@ -16,8 +16,8 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
     implementation("org.apache.commons:commons-math3:3.6.1")
+    implementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
     implementation(project(":api"))
 }
 

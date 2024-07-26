@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "org.example"
-version = "unspecified"
+version = System.getenv("VERSION")?: "development"
 
 repositories {
     mavenCentral()
