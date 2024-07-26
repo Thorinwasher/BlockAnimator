@@ -8,12 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: calculate version
-        id: calculate-version
-        uses: bitshifted/git-auto-semver@v1.1.0
+      - uses: paulhatch/semantic-version@v5.4.0
         with:
-          main_branch: main
-          create_tag: true
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          version_format: "${major}.${minor}.${patch}-SNAPSHOT"
+          # If enabled, diagnostic information will be added to the action output.
+          debug: true
       - uses: actions/setup-java@v4
         with:
           java-version: '21'
