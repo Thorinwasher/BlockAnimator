@@ -6,6 +6,8 @@ jobs:
   versioning:
     runs-on: ubuntu-latest
     steps:
+      - name: test
+        run: find . -maxdepth 1
       - name: calculate version
         id: calculate-version
         uses: bitshifted/git-auto-semver@v1
