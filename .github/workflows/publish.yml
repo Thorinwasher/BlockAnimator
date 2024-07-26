@@ -4,11 +4,14 @@ on:
     branches: [ main ]
 jobs:
   publish:
-    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: paulhatch/semantic-version@v5.4.0
+        with:
+          fetch-depth: 0
+      - name: Calculate version
+        uses: paulhatch/semantic-version@v5.4.0
+        id: calculate-version
         with:
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
@@ -27,16 +30,16 @@ jobs:
         run: bash gradlew :api:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.calculate-version.outputs.version-string }}
+          VERSION: ${{ steps.calculate-version.outputs.version }}
 
       - name: Publish paper block animation API
         run: bash gradlew :paper:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.calculate-version.outputs.version-string }}
+          VERSION: ${{ steps.calculate-version.outputs.version }}
 
       - name: Publish minestom block animation API
         run: bash gradlew :minestom:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.calculate-version.outputs.version-string }}
+          VERSION: ${{ steps.calculate-version.outputs.version }}
