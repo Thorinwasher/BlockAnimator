@@ -27,19 +27,19 @@ jobs:
         uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda # v3.4.2
 
       - name: Publish block animation API
-        run: ./gradlew :api:publish
+        run: bash gradlew.sh :api:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.calculate-version.outputs.version-string }}
 
       - name: Publish paper block animation API
-        run: ./gradlew :paper:publish
+        run: bash gradlew.sh :paper:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.calculate-version.outputs.version-string }}
 
       - name: Publish minestom block animation API
-        run: ./gradlew :minestom:publish
+        run: bash gradlew.sh :minestom:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.calculate-version.outputs.version-string }}
