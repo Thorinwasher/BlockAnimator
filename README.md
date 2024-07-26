@@ -2,7 +2,14 @@
 The project is currently in late prototype stage. I Will find a way on how to publish this to a repository and so on  later on.
 
 # How to import
-As said above, I have not made a way to publish this to a repository at the moment, this becomes more of a placeholder guide
+Firstly you need to add the repository used by this project:
+```kts
+repositories {
+  maven{
+    url = uri("https://maven.pkg.github.com/Thorinwasher/BlockAnimator")
+  }
+}
+```
 ## Minestom
 ```kts
 implementation("dev.thorinwasher.blockanimator:blockanimator-api:<version>")
