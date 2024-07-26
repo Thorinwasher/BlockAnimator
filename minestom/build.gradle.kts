@@ -1,8 +1,9 @@
 plugins {
     id("java")
+    id("maven-publish")
 }
 
-group = "dev.thorinwasher"
+group = properties["groupId"]!!
 version = properties["projectVersion"]!!
 
 repositories {
@@ -20,4 +21,24 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+publishing {
+
+    repositories {
+        publications {
+            create<MavenPublication>("maven") {
+                artifactId = "blockanimator-minestom"
+                from(components["java"])
+            }
+        }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/octocat/hello-world")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }

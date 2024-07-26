@@ -1,8 +1,9 @@
 plugins {
     id("java")
+    id("maven-publish")
 }
 
-group = "dev.thorinwashser"
+group = properties["groupId"]!!
 version = properties["projectVersion"]!!
 
 repositories {
@@ -27,6 +28,26 @@ tasks {
     java {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
+}
+
+publishing {
+
+    repositories {
+        publications {
+            create<MavenPublication>("maven") {
+                artifactId = "blockanimator-api"
+                from(components["java"])
+            }
+        }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/octocat/hello-world")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }
