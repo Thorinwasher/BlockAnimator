@@ -2,7 +2,7 @@
 The project is currently in late prototype stage. I Will find a way on how to publish this to a repository and so on  later on.
 
 # How to import
-As said above, I have not made a way to publish this repository at the moment, this becomes more of a placeholder guide
+As said above, I have not made a way to publish this to a repository at the moment, this becomes more of a placeholder guide
 ## Minestom
 ```kts
 implementation("dev.thorinwasher.blockanimator:blockanimator-api:<version>")
@@ -31,7 +31,7 @@ BlockSelector blockSelector = new GrowingDendriteSelector(0.2);
 Animation<Block> animation = new TimerAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
 Thread thread = new Thread(animation::compile);
 thread.start();
-Animator<Block> animator = new Animator<>(animation, new PlaceBlocksAfterBlockAnimator(1000, player.getInstance()));
+Animator<Block> animator = new Animator<>(animation, new PlaceBlocksAfterBlockAnimator(1000, instance));
 Task timer = MinecraftServer.getSchedulerManager().scheduleTask(animator::nextTick, TaskSchedule.immediate(), TaskSchedule.tick(1));
 animator.addOnCompletion(timer::cancel);
 ```
