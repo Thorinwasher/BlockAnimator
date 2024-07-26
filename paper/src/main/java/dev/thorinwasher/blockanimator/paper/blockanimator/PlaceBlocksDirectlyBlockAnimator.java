@@ -23,21 +23,21 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<BlockStat
 
     @Override
     public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockState> blockSupplier) {
-
+        handle.blockMove(identifier, to, blockSupplier);
     }
 
     @Override
     public void blockPlace(Vector3D identifier, BlockSupplier<BlockState> blockSupplier) {
-
+        handle.blockPlace(identifier, blockSupplier);
     }
 
     @Override
     public void blockDestroy(Vector3D identifier) {
-
+        handle.blockDestroy(identifier);
     }
 
     @Override
     public void finishAnimation(BlockSupplier<BlockState> blockSupplier) {
-
+        handle.finishAnimation(blockSupplier);
     }
 }
