@@ -9,7 +9,7 @@ version = System.getenv("VERSION")?: "development"
 repositories {
     mavenCentral()
     maven {
-        url = uri("https://maven.pkg.github.com/Thorinwasher/BlockAnimator")
+        url = uri("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
@@ -44,7 +44,7 @@ publishing {
         }
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/octocat/hello-world")
+            url = uri("https://maven.pkg.github.com/Thorinwasher/BlockAnimator")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
