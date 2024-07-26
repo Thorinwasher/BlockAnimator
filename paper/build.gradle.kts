@@ -9,7 +9,7 @@ version = System.getenv("VERSION")?: "development"
 repositories {
     mavenCentral()
     maven {
-        url = uri("https://repo.papermc.io/repository/maven-public/")
+        url = uri("https://maven.pkg.github.com/Thorinwasher/BlockAnimator")
     }
 }
 
