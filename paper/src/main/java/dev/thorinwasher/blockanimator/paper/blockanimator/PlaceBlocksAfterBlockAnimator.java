@@ -1,10 +1,10 @@
 package dev.thorinwasher.blockanimator.paper.blockanimator;
 
-import dev.thorinwasher.blockanimator.animator.BlockAnimator;
+import dev.thorinwasher.blockanimator.api.animator.BlockAnimator;
 import dev.thorinwasher.blockanimator.paper.ClassChecker;
 import dev.thorinwasher.blockanimator.paper.v1_17_1.BlockPlaceAfter1_17_1;
 import dev.thorinwasher.blockanimator.paper.v1_19_4.BlockPlaceAfter1_19_4;
-import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;

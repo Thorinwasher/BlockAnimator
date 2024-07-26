@@ -3,7 +3,7 @@ package dev.thorinwasher.blockanimator.minestomtest.command;
 import dev.thorinwasher.blockanimator.minestom.SchemBlockSupplier;
 import dev.thorinwasher.blockanimator.minestomtest.Registry;
 import dev.thorinwasher.blockanimator.minestomtest.TestSupplier;
-import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import net.hollowcube.schem.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;

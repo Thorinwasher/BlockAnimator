@@ -1,6 +1,6 @@
 package dev.thorinwasher.blockanimator.testplugin.supplier;
 
-import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.Material;

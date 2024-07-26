@@ -1,6 +1,6 @@
 package dev.thorinwasher.blockanimator.minestom;
 
-import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import net.hollowcube.schem.Rotation;
 import net.hollowcube.schem.Schematic;
 import net.minestom.server.coordinate.Point;

@@ -1,13 +1,13 @@
 package dev.thorinwasher.blockanimator.minestomtest.command;
 
-import dev.thorinwasher.blockanimator.animation.Animation;
-import dev.thorinwasher.blockanimator.animation.SequentialAnimation;
-import dev.thorinwasher.blockanimator.animator.Animator;
-import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
-import dev.thorinwasher.blockanimator.blockanimations.pathcompletion.PathCompletionSupplier;
+import dev.thorinwasher.blockanimator.api.animation.Animation;
+import dev.thorinwasher.blockanimator.api.animation.SequentialAnimation;
+import dev.thorinwasher.blockanimator.api.animator.Animator;
+import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
+import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.PathCompletionSupplier;
+import dev.thorinwasher.blockanimator.api.selector.*;
 import dev.thorinwasher.blockanimator.minestom.PlaceBlocksAfterBlockAnimator;
-import dev.thorinwasher.blockanimator.selector.*;
-import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentEnum;

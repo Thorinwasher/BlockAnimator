@@ -1,10 +1,10 @@
 package dev.thorinwasher.blockanimator.paper.v1_19_4;
 
-import dev.thorinwasher.blockanimator.algorithms.ManhatanNearest;
-import dev.thorinwasher.blockanimator.animator.BlockAnimator;
+import dev.thorinwasher.blockanimator.api.algorithms.ManhatanNearest;
+import dev.thorinwasher.blockanimator.api.animator.BlockAnimator;
 import dev.thorinwasher.blockanimator.paper.EntityUtils;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
-import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.Material;

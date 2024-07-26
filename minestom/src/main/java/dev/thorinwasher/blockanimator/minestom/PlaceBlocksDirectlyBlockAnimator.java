@@ -1,8 +1,8 @@
 package dev.thorinwasher.blockanimator.minestom;
 
-import dev.thorinwasher.blockanimator.algorithms.ManhatanNearest;
-import dev.thorinwasher.blockanimator.animator.BlockAnimator;
-import dev.thorinwasher.blockanimator.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.algorithms.ManhatanNearest;
+import dev.thorinwasher.blockanimator.api.animator.BlockAnimator;
+import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
