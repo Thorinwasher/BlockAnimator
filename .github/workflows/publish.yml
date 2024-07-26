@@ -6,6 +6,7 @@ jobs:
   versioning:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: test
         run: find . -maxdepth 1
       - name: calculate version
