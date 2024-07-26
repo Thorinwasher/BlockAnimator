@@ -37,8 +37,10 @@ BlockSupplier<Block> blockSupplier = new SchemBlockSupplier(hollowcubeSchemInsta
 BlockSelector blockSelector = new GrowingDendriteSelector(0.2);
 Animation<Block> animation = new TimerAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
 Thread thread = new Thread(animation::compile);
+// Compile the animation async, very important, otherwise your main thread will freeze.
 thread.start();
 Animator<Block> animator = new Animator<>(animation, new PlaceBlocksAfterBlockAnimator(1000, instance));
+// Run the animator every tick.
 Task timer = MinecraftServer.getSchedulerManager().scheduleTask(animator::nextTick, TaskSchedule.immediate(), TaskSchedule.tick(1));
 animator.addOnCompletion(timer::cancel);
 ```
