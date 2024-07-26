@@ -5,6 +5,7 @@ on:
 jobs:
   publish:
     permissions:
+      actions: read
       contents: read
       packages: write
     runs-on: ubuntu-latest
