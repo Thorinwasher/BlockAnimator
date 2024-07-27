@@ -5,9 +5,7 @@ This project is still in early development, expect issues and don't use in produ
 Firstly you need to add the repository used by this project:
 ```kts
 repositories {
-  maven{
-    url = uri("https://maven.pkg.github.com/Thorinwasher/BlockAnimator")
-  }
+  mavenCentral()
 }
 ```
 ## Minestom
