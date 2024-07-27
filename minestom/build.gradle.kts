@@ -29,6 +29,28 @@ publishing {
             create<MavenPublication>("maven") {
                 artifactId = "blockanimator-minestom"
                 from(components["java"])
+                pom {
+                    description.set("An interface between block animator api and minestom")
+                    name.set(artifactId)
+                    url.set(rootProject.properties["website"]!!.toString())
+                    licenses {
+                        license {
+                            name.set("MIT License")
+                            url.set("${rootProject.properties["websiteRaw"]!!}/v$version/LICENSE")
+                        }
+                    }
+                    developers {
+                        developer {
+                            id.set("thorinwasher")
+                            name.set("Hjalmar Gunnarsson")
+                        }
+                    }
+                    scm {
+                        connection.set("scm:git:git://github.com/Thorinwasher/BlockAnimator.git")
+                        developerConnection.set("scm:git:ssh://github.com:Thorinwasher/BlockAnimator.git")
+                        url.set("${rootProject.properties["website"]!!}/tree/v$version")
+                    }
+                }
             }
         }
         maven {
