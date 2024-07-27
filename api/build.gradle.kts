@@ -38,8 +38,6 @@ tasks {
 
 mavenPublishing {
     coordinates(project.group.toString(), "blockanimator-api", project.version.toString())
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-    signAllPublications()
     pom {
         description.set("A library for animating the generation or destruction of structures")
         name.set("blockanimator-api")
@@ -63,4 +61,6 @@ mavenPublishing {
             url.set("${rootProject.properties["website"]!!}/tree/v$version")
         }
     }
+    signAllPublications()
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
 }

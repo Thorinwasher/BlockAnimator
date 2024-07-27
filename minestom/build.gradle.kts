@@ -37,8 +37,6 @@ tasks {
 
 mavenPublishing {
     coordinates(project.group.toString(), "blockanimator-minestom", project.version.toString())
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-    signAllPublications()
 
     pom {
         description.set("An interface between block animator api and minestom")
@@ -63,4 +61,6 @@ mavenPublishing {
             url.set("${rootProject.properties["website"]!!}/tree/v$version")
         }
     }
+    signAllPublications()
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
 }
