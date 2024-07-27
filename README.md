@@ -1,5 +1,5 @@
 # Project status
-The project is currently in late prototype stage. I Will find a way on how to publish this to a repository and so on  later on.
+This project is still in early development, expect issues and don't use in production.
 
 # How to import
 Firstly you need to add the repository used by this project:
@@ -37,8 +37,10 @@ BlockSupplier<Block> blockSupplier = new SchemBlockSupplier(hollowcubeSchemInsta
 BlockSelector blockSelector = new GrowingDendriteSelector(0.2);
 Animation<Block> animation = new TimerAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
 Thread thread = new Thread(animation::compile);
+// Compile the animation async, very important, otherwise your main thread will freeze.
 thread.start();
 Animator<Block> animator = new Animator<>(animation, new PlaceBlocksAfterBlockAnimator(1000, instance));
+// Run the animator every tick.
 Task timer = MinecraftServer.getSchedulerManager().scheduleTask(animator::nextTick, TaskSchedule.immediate(), TaskSchedule.tick(1));
 animator.addOnCompletion(timer::cancel);
 ```
