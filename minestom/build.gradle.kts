@@ -1,6 +1,8 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     id("java")
-    id("maven-publish")
+    id("com.vanniktech.maven.publish") version "0.29.0"
 }
 
 group = properties["groupId"]!!
@@ -22,43 +24,31 @@ tasks.test {
     useJUnitPlatform()
 }
 
-publishing {
 
-    repositories {
-        publications {
-            create<MavenPublication>("maven") {
-                artifactId = "blockanimator-minestom"
-                from(components["java"])
-                pom {
-                    description.set("An interface between block animator api and minestom")
-                    name.set(artifactId)
-                    url.set(rootProject.properties["website"]!!.toString())
-                    licenses {
-                        license {
-                            name.set("MIT License")
-                            url.set("${rootProject.properties["websiteRaw"]!!}/v$version/LICENSE")
-                        }
-                    }
-                    developers {
-                        developer {
-                            id.set("thorinwasher")
-                            name.set("Hjalmar Gunnarsson")
-                            email.set("officialhjalmar.gunnarsson@outlook.com")
-                        }
-                    }
-                    scm {
-                        connection.set("scm:git:git://github.com/Thorinwasher/BlockAnimator.git")
-                        developerConnection.set("scm:git:ssh://github.com:Thorinwasher/BlockAnimator.git")
-                        url.set("${rootProject.properties["website"]!!}/tree/v$version")
-                    }
-                }
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.DEFAULT)
+    
+    pom {
+        description.set("An interface between block animator api and minestom")
+        name.set("blockanimator-minestom")
+        url.set(rootProject.properties["website"]!!.toString())
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("${rootProject.properties["websiteRaw"]!!}/v$version/LICENSE")
             }
         }
-        mavenCentral {
-            credentials {
-                username = System.getenv("CENTRAL_USER_TOKEN")
-                password = System.getenv("CENTRAL_KEY_TOKEN")
+        developers {
+            developer {
+                id.set("thorinwasher")
+                name.set("Hjalmar Gunnarsson")
+                email.set("officialhjalmar.gunnarsson@outlook.com")
             }
+        }
+        scm {
+            connection.set("scm:git:git://github.com/Thorinwasher/BlockAnimator.git")
+            developerConnection.set("scm:git:ssh://github.com:Thorinwasher/BlockAnimator.git")
+            url.set("${rootProject.properties["website"]!!}/tree/v$version")
         }
     }
 }

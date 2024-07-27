@@ -34,24 +34,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.calculate-version.outputs.version }}
-          CENTRAL_USER_TOKEN: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
-          CENTRAL_KEY_TOKEN: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
 
       - name: Publish paper block animation API
         run: bash gradlew :paper:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.calculate-version.outputs.version }}
-          CENTRAL_USER_TOKEN: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
-          CENTRAL_KEY_TOKEN: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
 
       - name: Publish minestom block animation API
         run: bash gradlew :minestom:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.calculate-version.outputs.version }}
-          CENTRAL_USER_TOKEN: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
-          CENTRAL_KEY_TOKEN: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
           
       - name: Create release
         uses: ncipollo/release-action@v1.14.0
