@@ -30,7 +30,7 @@ jobs:
         run: bash gradlew compileJava
 
       - name: Publish block animation API
-        run: bash gradlew :api:publishAndReleaseToMavenCentral --info
+        run: bash gradlew :api:publishAndReleaseToMavenCentral --no-configuration-cache --info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.calculate-version.outputs.version }}
@@ -39,7 +39,7 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
 
       - name: Publish paper block animation API
-        run: bash gradlew :paper:publishAndReleaseToMavenCentral --info
+        run: bash gradlew :paper:publishAndReleaseToMavenCentral --no-configuration-cache --info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.calculate-version.outputs.version }}
@@ -48,7 +48,7 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
 
       - name: Publish minestom block animation API
-        run: bash gradlew :minestom:publishAndReleaseToMavenCentral --info
+        run: bash gradlew :minestom:publishAndReleaseToMavenCentral --no-configuration-cache --info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.calculate-version.outputs.version }}
