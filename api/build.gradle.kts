@@ -28,6 +28,7 @@ tasks {
     }
 
     java {
+        withSourcesJar()
         withJavadocJar()
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(17))
@@ -36,7 +37,6 @@ tasks {
 }
 
 mavenPublishing {
-    print("version: " + project.version.toString())
     coordinates(project.group.toString(), "blockanimator-api", project.version.toString())
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
