@@ -39,7 +39,7 @@ tasks {
 }
 
 mavenPublishing {
-    coordinates(rootProject.group.toString(), "blockanimator-paper", rootProject.version.toString())
+    coordinates(project.group.toString(), "blockanimator-api", project.version.toString())
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
 
