@@ -40,7 +40,6 @@ mavenPublishing {
     coordinates(project.group.toString(), "blockanimator-api", project.version.toString())
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
-
     pom {
         description.set("A library for animating the generation or destruction of structures")
         name.set("blockanimator-api")
@@ -60,7 +59,7 @@ mavenPublishing {
         }
         scm {
             connection.set("scm:git:git://github.com/Thorinwasher/BlockAnimator.git")
-            developerConnection.set("scm:git:ssh://github.com:Thorinwasher/BlockAnimator.git")
+            developerConnection.set("scm:git:ssh://git@github.com/:Thorinwasher/BlockAnimator.git")
             url.set("${rootProject.properties["website"]!!}/tree/v$version")
         }
     }
