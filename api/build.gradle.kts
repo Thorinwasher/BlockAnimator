@@ -37,7 +37,7 @@ tasks {
 mavenPublishing {
     coordinates(project.group.toString(), "blockanimator-api", project.version.toString())
     pom {
-        description.set("A library for animating the generation or destruction of structures")
+        description.set("A library for animating the generation or destruction of structures in minecraft")
         name.set("blockanimator-api")
         url.set(rootProject.properties["website"]!!.toString())
         licenses {
