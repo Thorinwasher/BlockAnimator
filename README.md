@@ -12,13 +12,15 @@ repositories {
 ```kts
 implementation("dev.thorinwasher.blockanimator:blockanimator-api:<version>")
 implementation("dev.thorinwasher.blockanimator:blockanimator-minestom:<version>")
+implementation("org.apache.commons:commons-math3:3.6.1")
 ```
 ## Paper
 ```kts
 implementation("dev.thorinwasher.blockanimator:blockanimator-api:<version>")
 implementation("dev.thorinwasher.blockanimator:blockanimator-paper:<version>")
+implementation("org.apache.commons:commons-math3:3.6.1")
 ```
-If it's not obvious, you need to shade BlockAnimator into your paper plugin (please relocate in case another plugin will use this library).
+If it's not obvious, you need to shade the above packages into your paper plugin (please relocate in case another plugin will use this library).
 
 # Some examples on uses
 ## Minestom
