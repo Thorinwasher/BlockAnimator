@@ -6,7 +6,7 @@ plugins {
 }
 
 group = properties["groupId"]!!
-version = System.getenv("VERSION")?: "development"
+version = System.getenv("VERSION") ?: "development"
 
 repositories {
     mavenCentral()
@@ -37,6 +37,7 @@ tasks {
 }
 
 mavenPublishing {
+    coordinates(rootProject.group.toString(), "blockanimator-api", rootProject.version.toString())
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
 
