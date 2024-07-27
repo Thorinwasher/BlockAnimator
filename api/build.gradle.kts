@@ -53,6 +53,7 @@ publishing {
                         developer {
                             id.set("thorinwasher")
                             name.set("Hjalmar Gunnarsson")
+                            email.set("officialhjalmar.gunnarsson@outlook.com")
                         }
                     }
                     scm {
@@ -63,12 +64,10 @@ publishing {
                 }
             }
         }
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/Thorinwasher/BlockAnimator")
+        mavenCentral {
             credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+                username = System.getenv("CENTRAL_USER_TOKEN")
+                password = System.getenv("CENTRAL_KEY_TOKEN")
             }
         }
     }
