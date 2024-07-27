@@ -6,7 +6,7 @@ plugins {
 }
 
 group = properties["groupId"]!!
-version = System.getenv("VERSION")?: "development"
+version = System.getenv("VERSION") ?: "development"
 repositories {
     mavenCentral()
 }
@@ -20,14 +20,22 @@ dependencies {
     implementation("dev.hollowcube:schem:1.2.0")
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks {
+    test {
+        useJUnitPlatform()
+    }
+
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
 }
 
 
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.DEFAULT)
-    
+    signAllPublications()
+
     pom {
         description.set("An interface between block animator api and minestom")
         name.set("blockanimator-minestom")

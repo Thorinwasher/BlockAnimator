@@ -28,6 +28,8 @@ tasks {
     }
 
     java {
+        withSourcesJar()
+        withJavadocJar()
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(17))
         }
@@ -36,6 +38,7 @@ tasks {
 
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.DEFAULT)
+    signAllPublications()
 
     pom {
         description.set("A library for animating the generation or destruction of structures")

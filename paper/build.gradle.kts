@@ -30,6 +30,8 @@ tasks {
     }
 
     java {
+        withSourcesJar()
+        withJavadocJar()
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(17))
         }
@@ -38,6 +40,7 @@ tasks {
 
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.DEFAULT)
+    signAllPublications()
 
     pom {
         description.set("An interface between block animator api and paper")
