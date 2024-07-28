@@ -1,3 +1,10 @@
+<p align="center">
+    <a href="https://search.maven.org/search?q=dev.thorinwasher.blockanimator">
+        <img alt="Maven Central" src="https://img.shields.io/maven-central/v/dev.thorinwasher.blockanimator/blockanimator-paper?color=1bcc94&logo=apache-maven" />
+    </a>
+</p>
+
+
 # Project status
 This project is still in early development, expect issues and don't use in production.
 
