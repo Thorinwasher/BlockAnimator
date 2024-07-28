@@ -1,6 +1,5 @@
 pluginManagement {
     repositories {
-        maven("https://repo.papermc.io/repository/maven-public/")
         gradlePluginPortal()
     }
 }
@@ -12,3 +11,4 @@ include("minestom")
 include("papertest")
 include("paper")
 include("minestomtest")
+include("worldedit")

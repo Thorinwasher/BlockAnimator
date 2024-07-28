@@ -55,6 +55,15 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
+
+      - name: Publish world edit schematic loading interface
+        run: bash gradlew :worldedit:publishAndReleaseToMavenCentral --no-configuration-cache
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.calculate-version.outputs.version }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
           
       - name: Create release
         uses: ncipollo/release-action@v1.14.0
