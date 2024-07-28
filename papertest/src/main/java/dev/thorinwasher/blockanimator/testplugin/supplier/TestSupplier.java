@@ -1,15 +1,16 @@
 package dev.thorinwasher.blockanimator.testplugin.supplier;
 
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.paper.VectorConverter;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestSupplier implements BlockSupplier<BlockState> {
+public class TestSupplier implements BlockSupplier<BlockData> {
 
     private final Material material;
     private final int size;
@@ -23,11 +24,8 @@ public class TestSupplier implements BlockSupplier<BlockState> {
 
 
     @Override
-    public BlockState getBlock(Vector3D targetPosition) {
-        Location location = new Location(corner.getWorld(), targetPosition.getX(), targetPosition.getY(), targetPosition.getZ());
-        BlockState blockState = location.getBlock().getState();
-        blockState.setType(material);
-        return blockState;
+    public BlockData getBlock(Vector3D targetPosition) {
+        return material.createBlockData();
     }
 
     @Override
@@ -41,5 +39,10 @@ public class TestSupplier implements BlockSupplier<BlockState> {
             }
         }
         return output;
+    }
+
+    @Override
+    public void placeBlock(Vector3D identifier) {
+        VectorConverter.toLocation(identifier, corner.getWorld()).getBlock().setType(material);
     }
 }

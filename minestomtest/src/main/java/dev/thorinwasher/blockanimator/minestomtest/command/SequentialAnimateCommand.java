@@ -6,8 +6,8 @@ import dev.thorinwasher.blockanimator.api.animator.Animator;
 import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
 import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.PathCompletionSupplier;
 import dev.thorinwasher.blockanimator.api.selector.*;
-import dev.thorinwasher.blockanimator.minestom.PlaceBlocksAfterBlockAnimator;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.minestom.PlaceBlocksAfterBlockAnimator;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentEnum;
@@ -38,7 +38,7 @@ public class SequentialAnimateCommand extends Command {
             if (!(sender instanceof Player player)) {
                 throw new IllegalArgumentException("Only players can execute this command!");
             }
-            BlockSupplier<Block> blockSupplier = BlockSupplierUtil.getBlockSupplier(player, context.get(generateWidth));
+            BlockSupplier<Block> blockSupplier = BlockSupplierUtil.getBlockSupplier(player, context.get(generateWidth), player.getInstance());
             PathCompletionSupplier pathCompletionSupplier = new EaseOutCubicPathCompletionSupplier(0.05);
             BlockSelector blockSelector = switch (context.get(specialType)) {
                 case DENDRITE -> new GrowingDendriteSelector(0.1);

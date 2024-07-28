@@ -1,13 +1,14 @@
 package dev.thorinwasher.blockanimator.paper.v1_19_4;
 
 import dev.thorinwasher.blockanimator.api.animator.BlockAnimator;
+import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.paper.EntityUtils;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
-import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.util.Vector;
 
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockState> {
+public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockData> {
     private final World world;
     private final int maxEntities;
     private final Map<Vector3D, BlockDisplay> blockDisplays = new HashMap<>();
@@ -28,13 +29,13 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockState> {
     }
 
     @Override
-    public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockState> blockSupplier) {
+    public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockData> blockSupplier) {
         BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, to, blockSupplier);
         blockDisplay.teleport(VectorConverter.toLocation(to, world));
     }
 
     @Override
-    public void blockPlace(Vector3D identifier, BlockSupplier<BlockState> blockSupplier) {
+    public void blockPlace(Vector3D identifier, BlockSupplier<BlockData> blockSupplier) {
         BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, identifier, blockSupplier);
         blockDisplay.teleport(VectorConverter.toLocation(identifier, world));
         blockDisplay.setVelocity(new Vector());
@@ -50,16 +51,16 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockState> {
     }
 
     @Override
-    public void finishAnimation(BlockSupplier<BlockState> blockSupplier) {
+    public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
         entitiesToRemove.forEach(identifier -> {
             BlockDisplay blockDisplay = blockDisplays.remove(identifier);
             blockDisplay.remove();
-            blockSupplier.getBlock(identifier).update(true, false);
+            blockSupplier.placeBlock(identifier);
         });
         entitiesToRemove.clear();
     }
 
-    private BlockDisplay getOrSpawnBlockDisplay(Vector3D identifier, Vector3D position, BlockSupplier<BlockState> blockSupplier) {
+    private BlockDisplay getOrSpawnBlockDisplay(Vector3D identifier, Vector3D position, BlockSupplier<BlockData> blockSupplier) {
         BlockDisplay blockDisplay = blockDisplays.get(identifier);
         if (blockDisplay == null) {
             blockDisplay = EntityUtils.spawnBLockDisplay(world, blockSupplier.getBlock(identifier), position);

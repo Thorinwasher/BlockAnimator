@@ -1,5 +1,9 @@
 package dev.thorinwasher.blockanimator.testplugin.command;
 
+import com.sk89q.worldedit.EmptyClipboardException;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.session.SessionManager;
 import dev.thorinwasher.blockanimator.api.animation.Animation;
 import dev.thorinwasher.blockanimator.api.animation.TimerAnimation;
 import dev.thorinwasher.blockanimator.api.animator.Animator;
@@ -7,18 +11,20 @@ import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveAnimation;
 import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveLinear;
 import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveQuadraticBezier;
 import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
-import dev.thorinwasher.blockanimator.paper.blockanimator.PlaceBlocksDirectlyBlockAnimator;
 import dev.thorinwasher.blockanimator.api.selector.BlockSelector;
 import dev.thorinwasher.blockanimator.api.selector.RandomSpherical;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
-import dev.thorinwasher.blockanimator.testplugin.supplier.TestSupplier;
 import dev.thorinwasher.blockanimator.api.timer.BlockTimer;
 import dev.thorinwasher.blockanimator.api.timer.LinearBlockTimer;
+import dev.thorinwasher.blockanimator.paper.VectorConverter;
+import dev.thorinwasher.blockanimator.paper.blockanimator.PlaceBlocksDirectlyBlockAnimator;
+import dev.thorinwasher.blockanimator.testplugin.supplier.TestSupplier;
+import dev.thorinwasher.blockanimator.worldedit.PaperClipboardBlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -41,11 +47,11 @@ public class AnimateCommand implements CommandExecutor {
             return false;
         }
         BlockMoveAnimation blockMoveAnimation = getMovement(args[0], player.getLocation());
-        BlockSupplier<BlockState> blockSupplier = new TestSupplier(Material.DIAMOND_BLOCK, Integer.parseInt(args[1]), player.getLocation().add(player.getFacing().getDirection().multiply(20)));
+        BlockSupplier<BlockData> blockSupplier = getBLockSupplier(player, Integer.parseInt(args[1]));
         BlockTimer blockTimer = new LinearBlockTimer(Integer.parseInt(args[2]));
         BlockSelector blockSelector = new RandomSpherical();
-        Animation<BlockState> animation = new TimerAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
-        Animator<BlockState> animator = new Animator<>(animation, new PlaceBlocksDirectlyBlockAnimator(player.getWorld()));
+        Animation<BlockData> animation = new TimerAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
+        Animator<BlockData> animator = new Animator<>(animation, new PlaceBlocksDirectlyBlockAnimator(player.getWorld()));
         Bukkit.getScheduler().runTaskAsynchronously(plugin, animation::compile);
         Bukkit.getScheduler().runTaskTimer(plugin, (task) -> {
             if (animator.nextTick()) {
@@ -63,5 +69,17 @@ public class AnimateCommand implements CommandExecutor {
                     new BlockMoveQuadraticBezier(new Vector3D(playerLocation.getX(), playerLocation.getY(), playerLocation.getZ()), new EaseOutCubicPathCompletionSupplier(0.2), () -> 10D);
             default -> throw new IllegalArgumentException();
         };
+    }
+
+    private BlockSupplier<BlockData> getBLockSupplier(Player player, int width) {
+        SessionManager sessionManager = WorldEdit.getInstance().getSessionManager();
+        Location targetPos = player.getLocation().add(player.getFacing().getDirection().multiply(20));
+        if (sessionManager.contains(BukkitAdapter.adapt(player))) {
+            try {
+                return new PaperClipboardBlockSupplier(sessionManager.get(BukkitAdapter.adapt(player)).getClipboard().getClipboard(), VectorConverter.toVector3D(targetPos), player.getWorld());
+            } catch (EmptyClipboardException ignored) {
+            }
+        }
+        return new TestSupplier(Material.DIAMOND_BLOCK, width, targetPos);
     }
 }

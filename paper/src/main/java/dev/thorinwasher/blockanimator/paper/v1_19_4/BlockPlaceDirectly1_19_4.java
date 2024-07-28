@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class BlockPlaceDirectly1_19_4 implements BlockAnimator<BlockState> {
+public class BlockPlaceDirectly1_19_4 implements BlockAnimator<BlockData> {
     private final World world;
     private final Map<Vector3D, BlockDisplay> blockDisplays = new HashMap<>();
 
@@ -27,7 +28,7 @@ public class BlockPlaceDirectly1_19_4 implements BlockAnimator<BlockState> {
     }
 
     @Override
-    public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockState> blockSupplier) {
+    public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockData> blockSupplier) {
         BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, to, blockSupplier);
         Location current = blockDisplay.getLocation();
         Vector delta = VectorConverter.toLocation(to, world).subtract(current).toVector();
@@ -36,12 +37,12 @@ public class BlockPlaceDirectly1_19_4 implements BlockAnimator<BlockState> {
     }
 
     @Override
-    public void blockPlace(Vector3D identifier, BlockSupplier<BlockState> blockSupplier) {
+    public void blockPlace(Vector3D identifier, BlockSupplier<BlockData> blockSupplier) {
         BlockDisplay blockDisplay = blockDisplays.remove(identifier);
         if (blockDisplay != null) {
             blockDisplay.remove();
         }
-        blockSupplier.getBlock(identifier).update(true, false);
+        blockSupplier.placeBlock(identifier);
     }
 
     @Override
@@ -50,11 +51,11 @@ public class BlockPlaceDirectly1_19_4 implements BlockAnimator<BlockState> {
     }
 
     @Override
-    public void finishAnimation(BlockSupplier<BlockState> blockSupplier) {
+    public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
         // Blocks are placed dynamically, nothing needs to be done
     }
 
-    private BlockDisplay getOrSpawnBlockDisplay(Vector3D identifier, Vector3D startingPos, BlockSupplier<BlockState> blockSupplier) {
+    private BlockDisplay getOrSpawnBlockDisplay(Vector3D identifier, Vector3D startingPos, BlockSupplier<BlockData> blockSupplier) {
         BlockDisplay blockDisplay = blockDisplays.get(identifier);
         if (blockDisplay == null) {
             Optional<Vector3D> middlePoint = ManhatanNearest.findClosestPosition(

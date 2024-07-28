@@ -5,13 +5,14 @@ plugins {
 }
 
 group = "dev.thorinwasher"
-version = System.getenv("VERSION")?: "development"
+version = System.getenv("VERSION") ?: "development"
 
 repositories {
     mavenCentral()
     maven {
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
+    maven("https://maven.enginehub.org/repo/")
 }
 
 dependencies {
@@ -20,6 +21,9 @@ dependencies {
     implementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
     implementation(project(":api"))
     implementation(project(":paper"))
+    implementation(project(":worldedit"))
+    implementation("com.sk89q.worldedit:worldedit-core:7.4.0-SNAPSHOT")
+    implementation("com.sk89q.worldedit:worldedit-bukkit:7.4.0-SNAPSHOT")
     implementation("org.apache.commons:commons-math3:3.6.1")
 }
 
@@ -29,7 +33,10 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.17.1")
+        minecraftVersion("1.21")
+        downloadPlugins {
+            hangar("worldedit", "7.3.5")
+        }
     }
 
     processResources {
@@ -38,7 +45,7 @@ tasks {
 
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
     }
 
@@ -46,6 +53,7 @@ tasks {
         dependencies {
             include(project(":api:"))
             include(project(":paper"))
+            include(project(":worldedit"))
             include(dependency("org.apache.commons:commons-math3:.*"))
         }
     }

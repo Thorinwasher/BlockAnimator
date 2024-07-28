@@ -1,14 +1,14 @@
 package dev.thorinwasher.blockanimator.paper.v1_17_1;
 
 import dev.thorinwasher.blockanimator.api.animator.BlockAnimator;
+import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.paper.EntityUtils;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
-import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.util.Vector;
 
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockState> {
+public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockData> {
     private final World world;
     private final int maxEntities;
     private final Map<Vector3D, FallingBlock> fallingBlocks = new HashMap<>();
@@ -29,7 +29,7 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockState> {
     }
 
     @Override
-    public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockState> blockSupplier) {
+    public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockData> blockSupplier) {
         FallingBlock fallingBlock = spawnOrGetFallingBlock(identifier, to, blockSupplier);
         Location toLocation = VectorConverter.toLocation(to, world);
         Vector delta = toLocation.subtract(fallingBlock.getLocation()).toVector();
@@ -43,7 +43,7 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockState> {
     }
 
     @Override
-    public void blockPlace(Vector3D identifier, BlockSupplier<BlockState> blockSupplier) {
+    public void blockPlace(Vector3D identifier, BlockSupplier<BlockData> blockSupplier) {
         FallingBlock fallingBlock = fallingBlocks.get(identifier);
         fallingBlock.teleport(VectorConverter.toLocation(identifier, world).add(-0.5, 0, -0.5));
         fallingBlock.setVelocity(new Vector());
@@ -59,16 +59,16 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockState> {
     }
 
     @Override
-    public void finishAnimation(BlockSupplier<BlockState> blockSupplier) {
+    public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
         blocksToRemove.forEach(identifier -> {
             FallingBlock fallingBlock = fallingBlocks.remove(identifier);
             fallingBlock.remove();
-            blockSupplier.getBlock(identifier).update(true, false);
+            blockSupplier.placeBlock(identifier);
         });
         blocksToRemove.clear();
     }
 
-    private FallingBlock spawnOrGetFallingBlock(Vector3D identifier, Vector3D position, BlockSupplier<BlockState> blockSupplier) {
+    private FallingBlock spawnOrGetFallingBlock(Vector3D identifier, Vector3D position, BlockSupplier<BlockData> blockSupplier) {
         FallingBlock fallingBlock = fallingBlocks.get(identifier);
         if (fallingBlock == null) {
             fallingBlock = EntityUtils.spawnFallingBlock(world, blockSupplier.getBlock(identifier), position);

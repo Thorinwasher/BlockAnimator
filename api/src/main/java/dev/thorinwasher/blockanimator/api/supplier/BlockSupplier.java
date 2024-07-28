@@ -8,4 +8,6 @@ public interface BlockSupplier<B> {
     B getBlock(Vector3D targetPosition);
 
     List<Vector3D> getPositions();
+
+    void placeBlock(Vector3D identifier);
 }
