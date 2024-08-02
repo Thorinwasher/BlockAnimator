@@ -27,8 +27,8 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
     private final Transform transform;
     private final Transform transformInverse;
 
-    public PaperClipboardBlockSupplier(Clipboard clipboard, Vector3D origin, World world, Transform transform) {
-        this.clipboard = clipboard;
+    public PaperClipboardBlockSupplier(Clipboard clipboard, Vector3D origin, World world, Transform transform) throws WorldEditException {
+        this.clipboard = clipboard.transform(transform);
         this.origin = new Vector3D(Math.round(origin.getX()), Math.round(origin.getY()), Math.round(origin.getZ()));
         this.world = BukkitAdapter.adapt(world);
         this.transform = transform;
@@ -38,7 +38,7 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
     @Override
     public BlockData getBlock(Vector3D targetPosition) {
         BlockVector3 relativePosition = WEVectorConverter.toBlockVector3(targetPosition.subtract(origin));
-        return BukkitAdapter.adapt(clipboard.getBlock(applyTransformInverse(relativePosition).add(clipboard.getOrigin())));
+        return BukkitAdapter.adapt(clipboard.getBlock(relativePosition.add(clipboard.getOrigin())));
     }
 
     @Override
@@ -46,7 +46,6 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
         List<BlockVector3> output = new ArrayList<>();
         clipboard.getRegion().forEach(output::add);
         return new ArrayList<>(output.stream().map(blockVector3 -> blockVector3.subtract(clipboard.getOrigin()))
-                .map(this::applyTransform)
                 .map(WEVectorConverter::toVector3D)
                 .map(origin::add).toList());
     }
@@ -54,7 +53,7 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
     @Override
     public void placeBlock(Vector3D identifier) {
         BlockVector3 relativeWorldCoordinate = WEVectorConverter.toBlockVector3(identifier.subtract(origin));
-        BlockVector3 relativePosition = applyTransformInverse(relativeWorldCoordinate).add(clipboard.getOrigin());
+        BlockVector3 relativePosition = relativeWorldCoordinate.add(clipboard.getOrigin());
         BaseBlock baseBlock = clipboard.getFullBlock(relativePosition);
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
             editSession.setSideEffectApplier(SideEffectSet.none().with(SideEffect.LIGHTING, SideEffect.State.ON));

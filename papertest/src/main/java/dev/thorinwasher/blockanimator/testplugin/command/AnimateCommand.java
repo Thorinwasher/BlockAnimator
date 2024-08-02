@@ -2,6 +2,7 @@ package dev.thorinwasher.blockanimator.testplugin.command;
 
 import com.sk89q.worldedit.EmptyClipboardException;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.session.SessionManager;
@@ -80,6 +81,8 @@ public class AnimateCommand implements CommandExecutor {
                 ClipboardHolder clipboardHolder = sessionManager.get(BukkitAdapter.adapt(player)).getClipboard();
                 return new PaperClipboardBlockSupplier(clipboardHolder.getClipboard(), VectorConverter.toVector3D(targetPos), player.getWorld(), clipboardHolder.getTransform());
             } catch (EmptyClipboardException ignored) {
+            } catch (WorldEditException e) {
+                throw new RuntimeException(e);
             }
         }
         return new TestSupplier(Material.DIAMOND_BLOCK, width, targetPos);
