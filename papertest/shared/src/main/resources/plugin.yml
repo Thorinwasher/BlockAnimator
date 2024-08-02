@@ -1,9 +1,9 @@
-main: TestPlugin
+main: dev.thorinwasher.blockanimator.papertest.TestPlugin
 name: TestPlugin
 version: ${version?:unknown}
-api-version: 1.16
+api-version: 1.17
 depend:
   - WorldEdit
 commands:
   animate:
-    description: "Test dev.thorinwasher.blockanimator.testplugin.command for animating blocks"
+    description: "Test command for animating blocks"

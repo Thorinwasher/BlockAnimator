@@ -1,74 +1,40 @@
 package dev.thorinwasher.blockanimator.worldedit;
 
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.Transform;
-import com.sk89q.worldedit.util.SideEffect;
-import com.sk89q.worldedit.util.SideEffectSet;
-import com.sk89q.worldedit.world.block.BaseBlock;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.paper.ClassChecker;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
 
-    private final Clipboard clipboard;
-    private final Vector3D origin;
-    private final com.sk89q.worldedit.world.World world;
-    private final Transform transform;
-    private final Transform transformInverse;
+    private final BlockSupplier<BlockData> handle;
 
     public PaperClipboardBlockSupplier(Clipboard clipboard, Vector3D origin, World world, Transform transform) throws WorldEditException {
-        this.clipboard = clipboard.transform(transform);
-        this.origin = new Vector3D(Math.round(origin.getX()), Math.round(origin.getY()), Math.round(origin.getZ()));
-        this.world = BukkitAdapter.adapt(world);
-        this.transform = transform;
-        this.transformInverse = transform.inverse();
+        if (ClassChecker.methodExists("com.sk89q.worldedit.extent.clipboard.Clipboard", "transform", Transform.class)) {
+            handle = new PaperClipboardBlockSupplierV7_2_20(clipboard, origin, world, transform);
+        } else {
+            handle = new PaperClipboardBlockSupplierV7_2_20(clipboard, origin, world, transform);
+        }
     }
 
     @Override
     public BlockData getBlock(Vector3D targetPosition) {
-        BlockVector3 relativePosition = WEVectorConverter.toBlockVector3(targetPosition.subtract(origin));
-        return BukkitAdapter.adapt(clipboard.getBlock(relativePosition.add(clipboard.getOrigin())));
+        return handle.getBlock(targetPosition);
     }
 
     @Override
     public List<Vector3D> getPositions() {
-        List<BlockVector3> output = new ArrayList<>();
-        clipboard.getRegion().forEach(output::add);
-        return new ArrayList<>(output.stream().map(blockVector3 -> blockVector3.subtract(clipboard.getOrigin()))
-                .map(WEVectorConverter::toVector3D)
-                .map(origin::add).toList());
+        return handle.getPositions();
     }
 
     @Override
     public void placeBlock(Vector3D identifier) {
-        BlockVector3 relativeWorldCoordinate = WEVectorConverter.toBlockVector3(identifier.subtract(origin));
-        BlockVector3 relativePosition = relativeWorldCoordinate.add(clipboard.getOrigin());
-        BaseBlock baseBlock = clipboard.getFullBlock(relativePosition);
-        try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
-            editSession.setSideEffectApplier(SideEffectSet.none().with(SideEffect.LIGHTING, SideEffect.State.ON));
-            editSession.setBlock(WEVectorConverter.toBlockVector3(identifier), baseBlock);
-            Operations.complete(editSession.commit());
-        } catch (WorldEditException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private BlockVector3 applyTransform(BlockVector3 blockVector3) {
-        return transform.apply(blockVector3.toVector3()).toBlockPoint();
-    }
-
-    private BlockVector3 applyTransformInverse(BlockVector3 blockVector3) {
-        return transformInverse.apply(blockVector3.toVector3()).toBlockPoint();
+        handle.placeBlock(identifier);
     }
 }

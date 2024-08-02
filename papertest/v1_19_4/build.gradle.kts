@@ -35,7 +35,7 @@ tasks {
     runServer {
         minecraftVersion("1.19.4")
         downloadPlugins {
-            hangar("worldedit", "7.2.20")
+            url("https://cdn.modrinth.com/data/1u6JkXh5/versions/DfjpjdP5/worldedit-bukkit-7.2.20.jar")
         }
     }
 

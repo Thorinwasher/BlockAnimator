@@ -1,4 +1,4 @@
-package dev.thorinwasher.blockanimator.testplugin.command;
+package dev.thorinwasher.blockanimator.papertest.command;
 
 import com.sk89q.worldedit.EmptyClipboardException;
 import com.sk89q.worldedit.WorldEdit;
@@ -20,7 +20,7 @@ import dev.thorinwasher.blockanimator.api.timer.BlockTimer;
 import dev.thorinwasher.blockanimator.api.timer.LinearBlockTimer;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
 import dev.thorinwasher.blockanimator.paper.blockanimator.PlaceBlocksDirectlyBlockAnimator;
-import dev.thorinwasher.blockanimator.testplugin.supplier.TestSupplier;
+import dev.thorinwasher.blockanimator.papertest.supplier.TestSupplier;
 import dev.thorinwasher.blockanimator.worldedit.PaperClipboardBlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Bukkit;

@@ -12,6 +12,6 @@ public class VectorConverter {
     }
 
     public static Vector3D toVector3D(Location location) {
-        return new Vector3D(location.x(), location.y(), location.z());
+        return new Vector3D(location.getX(), location.getY(), location.getZ());
     }
 }

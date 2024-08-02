@@ -1,4 +1,4 @@
-package dev.thorinwasher.blockanimator.testplugin.supplier;
+package dev.thorinwasher.blockanimator.papertest.supplier;
 
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;

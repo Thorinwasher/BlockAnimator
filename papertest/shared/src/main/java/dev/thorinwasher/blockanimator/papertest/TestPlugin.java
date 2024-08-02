@@ -1,6 +1,6 @@
-package dev.thorinwasher.blockanimator.testplugin;
+package dev.thorinwasher.blockanimator.papertest;
 
-import dev.thorinwasher.blockanimator.testplugin.command.AnimateCommand;
+import dev.thorinwasher.blockanimator.papertest.command.AnimateCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TestPlugin extends JavaPlugin {
