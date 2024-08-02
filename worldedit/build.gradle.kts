@@ -25,8 +25,6 @@ dependencies {
     implementation("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
     implementation(project(":api"))
     implementation(project(":paper"))
-    implementation(project(":worldedit:v7_3_0"))
-    implementation(project(":worldedit:v7_2_20"))
 }
 
 tasks {
