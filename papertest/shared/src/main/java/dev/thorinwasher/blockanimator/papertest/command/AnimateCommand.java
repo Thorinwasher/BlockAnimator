@@ -19,6 +19,7 @@ import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.timer.BlockTimer;
 import dev.thorinwasher.blockanimator.api.timer.LinearBlockTimer;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
+import dev.thorinwasher.blockanimator.paper.blockanimator.PlaceBlocksAfterBlockAnimator;
 import dev.thorinwasher.blockanimator.paper.blockanimator.PlaceBlocksDirectlyBlockAnimator;
 import dev.thorinwasher.blockanimator.papertest.supplier.TestSupplier;
 import dev.thorinwasher.blockanimator.worldedit.PaperClipboardBlockSupplier;
@@ -53,7 +54,7 @@ public class AnimateCommand implements CommandExecutor {
         BlockTimer blockTimer = new LinearBlockTimer(Integer.parseInt(args[2]));
         BlockSelector blockSelector = new RandomSpherical();
         Animation<BlockData> animation = new TimerAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
-        Animator<BlockData> animator = new Animator<>(animation, new PlaceBlocksDirectlyBlockAnimator(player.getWorld()));
+        Animator<BlockData> animator = new Animator<>(animation, new PlaceBlocksAfterBlockAnimator(player.getWorld(), 1000));
         Bukkit.getScheduler().runTaskAsynchronously(plugin, animation::compile);
         Bukkit.getScheduler().runTaskTimer(plugin, (task) -> {
             if (animator.nextTick()) {

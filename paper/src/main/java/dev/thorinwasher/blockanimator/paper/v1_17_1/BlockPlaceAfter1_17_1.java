@@ -32,9 +32,8 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockData> {
     public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockData> blockSupplier) {
         FallingBlock fallingBlock = spawnOrGetFallingBlock(identifier, to, blockSupplier);
         Location toLocation = VectorConverter.toLocation(to, world);
-        Vector delta = toLocation.subtract(fallingBlock.getLocation()).toVector();
-        double previousVelocityLength = fallingBlock.getVelocity().length();
-        if (toLocation.getBlock().getType().isAir() && (previousVelocityLength == 0 || previousVelocityLength * 2 > delta.length())) {
+        Vector delta = toLocation.clone().subtract(fallingBlock.getLocation()).toVector();
+        if (toLocation.getBlock().getType().isAir()) {
             fallingBlock.setVelocity(delta);
         } else {
             fallingBlock.teleport(toLocation);

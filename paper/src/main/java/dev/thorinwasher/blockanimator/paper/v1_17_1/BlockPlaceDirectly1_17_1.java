@@ -1,14 +1,13 @@
 package dev.thorinwasher.blockanimator.paper.v1_17_1;
 
 import dev.thorinwasher.blockanimator.api.animator.BlockAnimator;
+import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.paper.EntityUtils;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
-import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.util.Vector;
@@ -29,9 +28,8 @@ public class BlockPlaceDirectly1_17_1 implements BlockAnimator<BlockData> {
     public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockData> blockSupplier) {
         FallingBlock fallingBlock = spawnOrGetFallingBlock(identifier, to, blockSupplier);
         Location toLocation = VectorConverter.toLocation(to, world);
-        Vector delta = toLocation.subtract(fallingBlock.getLocation()).toVector();
-        double previousVelocityLength = fallingBlock.getVelocity().length();
-        if (toLocation.getBlock().getType().isAir() && (previousVelocityLength == 0 || previousVelocityLength * 2 > delta.length())) {
+        Vector delta = toLocation.clone().subtract(fallingBlock.getLocation()).toVector();
+        if (toLocation.getBlock().getType().isAir()) {
             fallingBlock.setVelocity(delta);
         } else {
             fallingBlock.teleport(toLocation);
