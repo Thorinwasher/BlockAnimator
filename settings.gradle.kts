@@ -8,7 +8,9 @@ rootProject.name = "blockanimator"
 
 include("api")
 include("minestom")
-include("papertest")
 include("paper")
 include("minestomtest")
 include("worldedit")
+include("papertest:v1_17_1")
+include("papertest:v1_19_4")
+include("papertest:shared")

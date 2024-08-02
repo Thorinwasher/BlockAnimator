@@ -4,7 +4,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "dev.thorinwasher"
+group = "dev.thorinwasher.blockanimator"
 version = System.getenv("VERSION") ?: "development"
 
 repositories {
@@ -18,34 +18,24 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation(project(":papertest:shared"))
     implementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-    implementation(project(":api"))
-    implementation(project(":paper"))
-    implementation(project(":worldedit"))
-    implementation("com.sk89q.worldedit:worldedit-core:7.4.0-SNAPSHOT")
-    implementation("com.sk89q.worldedit:worldedit-bukkit:7.4.0-SNAPSHOT")
+    implementation("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
+    implementation("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
     implementation("org.apache.commons:commons-math3:3.6.1")
 }
 
 tasks {
+
     test {
         useJUnitPlatform()
     }
 
+
     runServer {
-        minecraftVersion("1.21")
+        minecraftVersion("1.17.1")
         downloadPlugins {
-            hangar("worldedit", "7.3.5")
-        }
-    }
-
-    processResources {
-        filesMatching("**/plugin.yml") { expand(project.properties) }
-    }
-
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(21))
+            hangar("worldedit", "7.2.20")
         }
     }
 
@@ -54,7 +44,14 @@ tasks {
             include(project(":api:"))
             include(project(":paper"))
             include(project(":worldedit"))
+            include(project(":papertest:shared"))
             include(dependency("org.apache.commons:commons-math3:.*"))
+        }
+    }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
         }
     }
 }
