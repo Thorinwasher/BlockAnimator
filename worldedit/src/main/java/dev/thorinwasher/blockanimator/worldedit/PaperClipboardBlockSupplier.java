@@ -7,6 +7,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.transform.Transform;
 import com.sk89q.worldedit.util.SideEffect;
 import com.sk89q.worldedit.util.SideEffectSet;
 import com.sk89q.worldedit.world.block.BaseBlock;
@@ -23,17 +24,21 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
     private final Clipboard clipboard;
     private final Vector3D origin;
     private final com.sk89q.worldedit.world.World world;
+    private final Transform transform;
+    private final Transform transformInverse;
 
-    public PaperClipboardBlockSupplier(Clipboard clipboard, Vector3D origin, World world) {
+    public PaperClipboardBlockSupplier(Clipboard clipboard, Vector3D origin, World world, Transform transform) {
         this.clipboard = clipboard;
         this.origin = new Vector3D(Math.round(origin.getX()), Math.round(origin.getY()), Math.round(origin.getZ()));
         this.world = BukkitAdapter.adapt(world);
+        this.transform = transform;
+        this.transformInverse = transform.inverse();
     }
 
     @Override
     public BlockData getBlock(Vector3D targetPosition) {
-        BlockVector3 relativePosition = WEVectorConverter.toBlockVector3(targetPosition.subtract(origin)).add(clipboard.getOrigin());
-        return BukkitAdapter.adapt(clipboard.getBlock(relativePosition));
+        BlockVector3 relativePosition = WEVectorConverter.toBlockVector3(targetPosition.subtract(origin));
+        return BukkitAdapter.adapt(clipboard.getBlock(applyTransformInverse(relativePosition).add(clipboard.getOrigin())));
     }
 
     @Override
@@ -41,13 +46,15 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
         List<BlockVector3> output = new ArrayList<>();
         clipboard.getRegion().forEach(output::add);
         return new ArrayList<>(output.stream().map(blockVector3 -> blockVector3.subtract(clipboard.getOrigin()))
+                .map(this::applyTransform)
                 .map(WEVectorConverter::toVector3D)
                 .map(origin::add).toList());
     }
 
     @Override
     public void placeBlock(Vector3D identifier) {
-        BlockVector3 relativePosition = WEVectorConverter.toBlockVector3(identifier.subtract(origin)).add(clipboard.getOrigin());
+        BlockVector3 relativeWorldCoordinate = WEVectorConverter.toBlockVector3(identifier.subtract(origin));
+        BlockVector3 relativePosition = applyTransformInverse(relativeWorldCoordinate).add(clipboard.getOrigin());
         BaseBlock baseBlock = clipboard.getFullBlock(relativePosition);
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
             editSession.setSideEffectApplier(SideEffectSet.none().with(SideEffect.LIGHTING, SideEffect.State.ON));
@@ -56,5 +63,13 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
         } catch (WorldEditException e) {
             e.printStackTrace();
         }
+    }
+
+    private BlockVector3 applyTransform(BlockVector3 blockVector3) {
+        return transform.apply(blockVector3.toVector3()).toBlockPoint();
+    }
+
+    private BlockVector3 applyTransformInverse(BlockVector3 blockVector3) {
+        return transformInverse.apply(blockVector3.toVector3()).toBlockPoint();
     }
 }

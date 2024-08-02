@@ -3,6 +3,7 @@ package dev.thorinwasher.blockanimator.testplugin.command;
 import com.sk89q.worldedit.EmptyClipboardException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.session.SessionManager;
 import dev.thorinwasher.blockanimator.api.animation.Animation;
 import dev.thorinwasher.blockanimator.api.animation.TimerAnimation;
@@ -76,7 +77,8 @@ public class AnimateCommand implements CommandExecutor {
         Location targetPos = player.getLocation().add(player.getFacing().getDirection().multiply(20));
         if (sessionManager.contains(BukkitAdapter.adapt(player))) {
             try {
-                return new PaperClipboardBlockSupplier(sessionManager.get(BukkitAdapter.adapt(player)).getClipboard().getClipboard(), VectorConverter.toVector3D(targetPos), player.getWorld());
+                ClipboardHolder clipboardHolder = sessionManager.get(BukkitAdapter.adapt(player)).getClipboard();
+                return new PaperClipboardBlockSupplier(clipboardHolder.getClipboard(), VectorConverter.toVector3D(targetPos), player.getWorld(), clipboardHolder.getTransform());
             } catch (EmptyClipboardException ignored) {
             }
         }
