@@ -10,4 +10,8 @@ public interface BlockSupplier<B> {
     List<Vector3D> getPositions();
 
     void placeBlock(Vector3D identifier);
+
+    default void placeBlocks(List<Vector3D> identifiers) {
+        identifiers.forEach(this::placeBlock);
+    }
 }
