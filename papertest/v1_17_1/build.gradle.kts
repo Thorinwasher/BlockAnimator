@@ -33,7 +33,7 @@ tasks {
 
 
     runServer {
-        minecraftVersion("1.18.2")
+        minecraftVersion("1.17.1")
         downloadPlugins {
             url("https://cdn.modrinth.com/data/z4HZZnLr/versions/YSQCH9EW/FastAsyncWorldEdit-Bukkit-2.9.2.jar")
         }

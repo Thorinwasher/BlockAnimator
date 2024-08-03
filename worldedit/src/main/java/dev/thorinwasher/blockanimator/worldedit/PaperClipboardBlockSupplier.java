@@ -1,5 +1,6 @@
 package dev.thorinwasher.blockanimator.worldedit;
 
+import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
@@ -13,6 +14,7 @@ import com.sk89q.worldedit.util.SideEffect;
 import com.sk89q.worldedit.util.SideEffectSet;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.paper.ClassChecker;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
@@ -57,28 +59,37 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
         BlockVector3 relativeWorldCoordinate = applyTransformInverse(WEVectorConverter.toBlockVector3(identifier.subtract(origin)));
         BlockVector3 regionPosition = relativeWorldCoordinate.add(clipboard.getOrigin());
         BaseBlock baseBlock = getBlock(regionPosition);
-        try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
-            editSession.setSideEffectApplier(SideEffectSet.none().with(SideEffect.LIGHTING, SideEffect.State.ON));
+        runSession(editSession -> {
             editSession.setBlock(WEVectorConverter.toBlockVector3(identifier), baseBlock);
-            Operations.complete(editSession.commit());
-        } catch (WorldEditException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     @Override
     public void placeBlocks(List<Vector3D> identifiers) {
-        try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
-            editSession.setSideEffectApplier(SideEffectSet.none().with(SideEffect.LIGHTING, SideEffect.State.ON));
+        runSession(editSession -> {
             for (Vector3D identifier : identifiers) {
                 BlockVector3 relativeWorldCoordinate = applyTransformInverse(WEVectorConverter.toBlockVector3(identifier.subtract(origin)));
                 BlockVector3 regionPosition = relativeWorldCoordinate.add(clipboard.getOrigin());
                 BaseBlock baseBlock = getBlock(regionPosition);
                 editSession.setBlock(WEVectorConverter.toBlockVector3(identifier), baseBlock);
             }
-            Operations.complete(editSession.commit());
-        } catch (WorldEditException e) {
-            e.printStackTrace();
+        });
+    }
+
+    private void runSession(EditSessionConsumer editSessionConsumer) {
+        Runnable editSessionRunnable = () -> {
+            try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+                editSession.setSideEffectApplier(SideEffectSet.none().with(SideEffect.LIGHTING, SideEffect.State.ON));
+                editSessionConsumer.accept(editSession);
+                Operations.complete(editSession.commit());
+            } catch (WorldEditException e) {
+                e.printStackTrace();
+            }
+        };
+        if (ClassChecker.classExists("com.fastasyncworldedit.core.FaweAPI")) {
+            FaweAPI.getTaskManager().runUnsafe(editSessionRunnable);
+        } else {
+            editSessionRunnable.run();
         }
     }
 
@@ -93,5 +104,10 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
 
     private BlockVector3 applyTransformInverse(BlockVector3 blockVector3) {
         return transformInverse.apply(blockVector3.toVector3()).toBlockPoint();
+    }
+
+    interface EditSessionConsumer {
+
+        void accept(EditSession editSession) throws WorldEditException;
     }
 }
