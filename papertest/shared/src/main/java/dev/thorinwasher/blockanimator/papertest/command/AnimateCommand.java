@@ -13,13 +13,11 @@ import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveAnimation;
 import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveLinear;
 import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveQuadraticBezier;
 import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
-import dev.thorinwasher.blockanimator.api.selector.BlockSelector;
-import dev.thorinwasher.blockanimator.api.selector.RandomSpherical;
+import dev.thorinwasher.blockanimator.api.selector.*;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.timer.BlockTimer;
 import dev.thorinwasher.blockanimator.api.timer.LinearBlockTimer;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
-import dev.thorinwasher.blockanimator.paper.blockanimator.PlaceBlocksAfterBlockAnimator;
 import dev.thorinwasher.blockanimator.paper.blockanimator.PlaceBlocksDirectlyBlockAnimator;
 import dev.thorinwasher.blockanimator.papertest.supplier.TestSupplier;
 import dev.thorinwasher.blockanimator.worldedit.PaperClipboardBlockSupplier;
@@ -50,11 +48,11 @@ public class AnimateCommand implements CommandExecutor {
             return false;
         }
         BlockMoveAnimation blockMoveAnimation = getMovement(args[0], player.getLocation());
-        BlockSupplier<BlockData> blockSupplier = getBLockSupplier(player, Integer.parseInt(args[1]));
-        BlockTimer blockTimer = new LinearBlockTimer(Integer.parseInt(args[2]));
-        BlockSelector blockSelector = new RandomSpherical();
+        BlockSupplier<BlockData> blockSupplier = getBLockSupplier(player, Integer.parseInt(args[2]));
+        BlockTimer blockTimer = new LinearBlockTimer(Integer.parseInt(args[3]));
+        BlockSelector blockSelector = getBlockSelector(args[1]);
         Animation<BlockData> animation = new TimerAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
-        Animator<BlockData> animator = new Animator<>(animation, new PlaceBlocksAfterBlockAnimator(player.getWorld(), 1000));
+        Animator<BlockData> animator = new Animator<>(animation, new PlaceBlocksDirectlyBlockAnimator(player.getWorld()));
         Bukkit.getScheduler().runTaskAsynchronously(plugin, animation::compile);
         Bukkit.getScheduler().runTaskTimer(plugin, (task) -> {
             if (animator.nextTick()) {
@@ -62,6 +60,17 @@ public class AnimateCommand implements CommandExecutor {
             }
         }, 0, 1);
         return true;
+    }
+
+    private BlockSelector getBlockSelector(String blockSelectorString) {
+        return switch (blockSelectorString) {
+            case "layered_bottom_first" -> new LayeredBottomFirst();
+            case "bottom_first" -> new BottomFirstSelector();
+            case "random_spherical" -> new RandomSpherical();
+            case "dendrite" -> new GrowingDendriteSelector(0.1);
+            case "growing" -> new GrowingSelector();
+            default -> throw new IllegalArgumentException("Unknown block selector");
+        };
     }
 
     private BlockMoveAnimation getMovement(String argument, Location playerLocation) {
