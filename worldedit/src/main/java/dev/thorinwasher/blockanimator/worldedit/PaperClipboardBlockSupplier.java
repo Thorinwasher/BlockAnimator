@@ -45,7 +45,7 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
     @Override
     public List<Vector3D> getPositions() {
         List<Vector3D> output = new ArrayList<>();
-        for(BlockVector3 blockVector3 : clipboard.getRegion()){
+        for (BlockVector3 blockVector3 : clipboard.getRegion()) {
             BlockVector3 relativePosition = applyTransform(blockVector3.subtract(clipboard.getOrigin()));
             output.add(WEVectorConverter.toVector3D(relativePosition).add(origin));
         }
@@ -57,10 +57,25 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
         BlockVector3 relativeWorldCoordinate = applyTransformInverse(WEVectorConverter.toBlockVector3(identifier.subtract(origin)));
         BlockVector3 regionPosition = relativeWorldCoordinate.add(clipboard.getOrigin());
         BaseBlock baseBlock = getBlock(regionPosition);
-
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
             editSession.setSideEffectApplier(SideEffectSet.none().with(SideEffect.LIGHTING, SideEffect.State.ON));
             editSession.setBlock(WEVectorConverter.toBlockVector3(identifier), baseBlock);
+            Operations.complete(editSession.commit());
+        } catch (WorldEditException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void placeBlocks(List<Vector3D> identifiers) {
+        try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+            editSession.setSideEffectApplier(SideEffectSet.none().with(SideEffect.LIGHTING, SideEffect.State.ON));
+            for (Vector3D identifier : identifiers) {
+                BlockVector3 relativeWorldCoordinate = applyTransformInverse(WEVectorConverter.toBlockVector3(identifier.subtract(origin)));
+                BlockVector3 regionPosition = relativeWorldCoordinate.add(clipboard.getOrigin());
+                BaseBlock baseBlock = getBlock(regionPosition);
+                editSession.setBlock(WEVectorConverter.toBlockVector3(identifier), baseBlock);
+            }
             Operations.complete(editSession.commit());
         } catch (WorldEditException e) {
             e.printStackTrace();

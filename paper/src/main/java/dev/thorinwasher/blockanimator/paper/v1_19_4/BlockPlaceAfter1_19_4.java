@@ -7,7 +7,6 @@ import dev.thorinwasher.blockanimator.paper.VectorConverter;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.util.Vector;
@@ -55,8 +54,8 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockData> {
         entitiesToRemove.forEach(identifier -> {
             BlockDisplay blockDisplay = blockDisplays.remove(identifier);
             blockDisplay.remove();
-            blockSupplier.placeBlock(identifier);
         });
+        blockSupplier.placeBlocks(entitiesToRemove);
         entitiesToRemove.clear();
     }
 
