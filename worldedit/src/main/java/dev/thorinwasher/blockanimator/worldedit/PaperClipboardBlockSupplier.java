@@ -44,12 +44,12 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
 
     @Override
     public List<Vector3D> getPositions() {
-        List<BlockVector3> output = new ArrayList<>();
-        clipboard.getRegion().forEach(output::add);
-        return new ArrayList<>(output.stream().map(blockVector3 -> blockVector3.subtract(clipboard.getOrigin()))
-                .map(this::applyTransform)
-                .map(WEVectorConverter::toVector3D)
-                .map(origin::add).toList());
+        List<Vector3D> output = new ArrayList<>();
+        for(BlockVector3 blockVector3 : clipboard.getRegion()){
+            BlockVector3 relativePosition = applyTransform(blockVector3.subtract(clipboard.getOrigin()));
+            output.add(WEVectorConverter.toVector3D(relativePosition).add(origin));
+        }
+        return output;
     }
 
     @Override
@@ -68,7 +68,8 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
     }
 
     private BaseBlock getBlock(BlockVector3 regionPosition) {
-        return BlockTransformExtent.transform(clipboard.getFullBlock(regionPosition), transform);
+        BaseBlock baseBlock = clipboard.getFullBlock(regionPosition);
+        return BlockTransformExtent.transform(baseBlock, transform);
     }
 
     private BlockVector3 applyTransform(BlockVector3 blockVector3) {

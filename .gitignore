@@ -29,5 +29,6 @@ replay_pid*
 .idea/**
 papertest/v1_17_1/run/**
 papertest/v1_19_4/run/**
+papertest/v1_21/run/**
 **/.gradle/**
 **/build/**

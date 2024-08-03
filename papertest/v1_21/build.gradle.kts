@@ -19,9 +19,9 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation(project(":papertest:shared"))
-    compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-    compileOnly("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
+    implementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    implementation("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
+    implementation("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
     implementation("org.apache.commons:commons-math3:3.6.1")
 }
 
@@ -33,9 +33,10 @@ tasks {
 
 
     runServer {
-        minecraftVersion("1.18.2")
+        minecraftVersion("1.21")
         downloadPlugins {
-            url("https://cdn.modrinth.com/data/z4HZZnLr/versions/YSQCH9EW/FastAsyncWorldEdit-Bukkit-2.9.2.jar")
+            // modrinth("worldedit", "Jo76t1oi")
+            url("https://cdn.modrinth.com/data/z4HZZnLr/versions/CyUQUWfI/FastAsyncWorldEdit-Bukkit-2.11.0.jar")
         }
     }
 
@@ -51,7 +52,7 @@ tasks {
 
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
     }
 }
