@@ -20,9 +20,9 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("org.apache.commons:commons-math3:3.6.1")
-    runtimeOnly("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
-    runtimeOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
-    runtimeOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
+    compileOnly("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
     implementation(project(":api"))
     implementation(project(":paper"))
 }

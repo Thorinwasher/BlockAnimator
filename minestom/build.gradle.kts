@@ -16,7 +16,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("org.apache.commons:commons-math3:3.6.1")
     implementation(project(":api"))
-    runtimeOnly("net.minestom:minestom-snapshots:2be6f9c507")
+    compileOnly("net.minestom:minestom-snapshots:2be6f9c507")
     implementation("dev.hollowcube:schem:1.2.0")
 }
 
