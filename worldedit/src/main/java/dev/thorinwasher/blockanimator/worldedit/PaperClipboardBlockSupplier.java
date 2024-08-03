@@ -1,27 +1,21 @@
 package dev.thorinwasher.blockanimator.worldedit;
 
-import com.fastasyncworldedit.core.FaweAPI;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.transform.BlockTransformExtent;
-import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.Transform;
 import com.sk89q.worldedit.util.SideEffect;
 import com.sk89q.worldedit.util.SideEffectSet;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
-import dev.thorinwasher.blockanimator.paper.ClassChecker;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
 
