@@ -11,7 +11,7 @@ import com.sk89q.worldedit.util.SideEffectSet;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.bukkit.World;
+import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
 
 import java.util.ArrayList;
@@ -25,10 +25,11 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
     private final Transform transform;
     private final Transform transformInverse;
 
-    public PaperClipboardBlockSupplier(Clipboard clipboard, Vector3D origin, World world, Transform transform) throws WorldEditException {
+    public PaperClipboardBlockSupplier(Clipboard clipboard, Location origin, Transform transform) throws WorldEditException {
         this.clipboard = clipboard;
-        this.origin = new Vector3D(Math.round(origin.getX()), Math.round(origin.getY()), Math.round(origin.getZ()));
-        this.world = BukkitAdapter.adapt(world);
+        clipboard.setOrigin(clipboard.getRegion().getCenter().toBlockPoint());
+        this.origin = new Vector3D(origin.getBlockX(), origin.getBlockY(), origin.getBlockZ());
+        this.world = BukkitAdapter.adapt(origin.getWorld());
         this.transform = transform;
         this.transformInverse = transform.inverse();
     }
