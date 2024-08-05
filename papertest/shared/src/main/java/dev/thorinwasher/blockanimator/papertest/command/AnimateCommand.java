@@ -17,9 +17,7 @@ import dev.thorinwasher.blockanimator.api.selector.*;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.timer.BlockTimer;
 import dev.thorinwasher.blockanimator.api.timer.LinearBlockTimer;
-import dev.thorinwasher.blockanimator.paper.VectorConverter;
 import dev.thorinwasher.blockanimator.paper.blockanimator.PlaceBlocksAfterBlockAnimator;
-import dev.thorinwasher.blockanimator.paper.blockanimator.PlaceBlocksDirectlyBlockAnimator;
 import dev.thorinwasher.blockanimator.papertest.supplier.TestSupplier;
 import dev.thorinwasher.blockanimator.worldedit.PaperClipboardBlockSupplier;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -90,7 +88,7 @@ public class AnimateCommand implements CommandExecutor {
         if (sessionManager.contains(BukkitAdapter.adapt(player))) {
             try {
                 ClipboardHolder clipboardHolder = sessionManager.get(BukkitAdapter.adapt(player)).getClipboard();
-                return new PaperClipboardBlockSupplier(clipboardHolder.getClipboard(), VectorConverter.toVector3D(targetPos), player.getWorld(), clipboardHolder.getTransform());
+                return new PaperClipboardBlockSupplier(clipboardHolder.getClipboard(), targetPos, clipboardHolder.getTransform());
             } catch (EmptyClipboardException ignored) {
             } catch (WorldEditException e) {
                 throw new RuntimeException(e);
