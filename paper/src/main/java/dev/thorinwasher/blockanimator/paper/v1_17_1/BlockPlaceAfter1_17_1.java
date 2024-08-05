@@ -31,7 +31,7 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockData> {
     @Override
     public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockData> blockSupplier) {
         FallingBlock fallingBlock = spawnOrGetFallingBlock(identifier, to, blockSupplier);
-        Location toLocation = VectorConverter.toLocation(to, world).add(-0.5, 0, -0.5);
+        Location toLocation = VectorConverter.toLocation(to, world).add(0.5, 0, 0.5);
         Vector delta = toLocation.clone().subtract(fallingBlock.getLocation()).toVector();
         if (toLocation.getBlock().getType().isAir()) {
             fallingBlock.setVelocity(delta);
@@ -44,7 +44,7 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockData> {
     @Override
     public void blockPlace(Vector3D identifier, BlockSupplier<BlockData> blockSupplier) {
         FallingBlock fallingBlock = fallingBlocks.get(identifier);
-        fallingBlock.teleport(VectorConverter.toLocation(identifier, world).add(-0.5, 0, -0.5));
+        fallingBlock.teleport(VectorConverter.toLocation(identifier, world).add(0.5, 0, 0.5));
         fallingBlock.setVelocity(new Vector());
         blocksToRemove.add(identifier);
         if (blocksToRemove.size() > maxEntities) {
