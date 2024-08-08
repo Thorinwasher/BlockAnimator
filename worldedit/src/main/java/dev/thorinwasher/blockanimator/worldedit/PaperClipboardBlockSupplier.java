@@ -27,7 +27,6 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
 
     public PaperClipboardBlockSupplier(Clipboard clipboard, Location origin, Transform transform) throws WorldEditException {
         this.clipboard = clipboard;
-        clipboard.setOrigin(clipboard.getRegion().getCenter().toBlockPoint());
         this.origin = new Vector3D(origin.getBlockX(), origin.getBlockY(), origin.getBlockZ());
         this.world = BukkitAdapter.adapt(origin.getWorld());
         this.transform = transform;
