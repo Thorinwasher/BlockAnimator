@@ -3,10 +3,11 @@ package dev.thorinwasher.blockanimator.paper;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.inventory.ItemStack;
 
 public class EntityUtils {
 
@@ -26,6 +27,7 @@ public class EntityUtils {
         fallingBlock.setPersistent(false);
         fallingBlock.setDropItem(false);
         fallingBlock.setGravity(false);
+        fallingBlock.setInvulnerable(true);
         return fallingBlock;
     }
 }
