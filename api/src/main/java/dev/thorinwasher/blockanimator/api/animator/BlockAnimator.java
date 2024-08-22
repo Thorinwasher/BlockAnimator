@@ -2,6 +2,7 @@ package dev.thorinwasher.blockanimator.api.animator;
 
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
 public interface BlockAnimator<B> {
@@ -14,4 +15,5 @@ public interface BlockAnimator<B> {
 
     void finishAnimation(BlockSupplier<B> blockSupplier);
 
+    void setTransform(ImmutableVector3i identifier, Matrix4f transform);
 }

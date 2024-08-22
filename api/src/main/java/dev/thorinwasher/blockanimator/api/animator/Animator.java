@@ -2,12 +2,11 @@ package dev.thorinwasher.blockanimator.api.animator;
 
 import dev.thorinwasher.blockanimator.api.animation.Animation;
 import dev.thorinwasher.blockanimator.api.animation.AnimationFrame;
-import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveType;
-import dev.thorinwasher.blockanimator.api.container.TwoTuple;
+import dev.thorinwasher.blockanimator.api.animation.BlockAnimationFrame;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
-import org.joml.Vector3d;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 import java.util.Map;
 import java.util.Optional;
@@ -35,14 +34,15 @@ public class Animator<B> {
         }
         AnimationFrame frame = animation.getNext();
         BlockSupplier<B> supplier = animation.supplier();
-        for (Map.Entry<ImmutableVector3i, TwoTuple<Vector3d, BlockMoveType>> entry : frame.currentToDestination().entrySet()) {
+        for (Map.Entry<ImmutableVector3i, BlockAnimationFrame> entry : frame.currentToDestination().entrySet()) {
             ImmutableVector3i identifier = entry.getKey();
-            Vector3d position = entry.getValue().first();
-            switch (entry.getValue().second()) {
+            Vector3d position = entry.getValue().position();
+            switch (entry.getValue().moveType()) {
                 case PLACE -> blockAnimator.blockPlace(identifier, supplier);
                 case MOVE -> blockAnimator.blockMove(identifier, position, supplier);
                 case DESTROY -> blockAnimator.blockDestroy(identifier);
             }
+            blockAnimator.setTransform(identifier, entry.getValue().transform());
         }
         return false;
     }

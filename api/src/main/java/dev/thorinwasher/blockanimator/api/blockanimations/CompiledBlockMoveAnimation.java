@@ -1,10 +1,9 @@
 package dev.thorinwasher.blockanimator.api.blockanimations;
 
-import dev.thorinwasher.blockanimator.api.container.TwoTuple;
-import org.joml.Vector3d;
+import dev.thorinwasher.blockanimator.api.animation.BlockAnimationFrame;
 
 import java.util.List;
 
-public record CompiledBlockMoveAnimation(List<TwoTuple<Vector3d, BlockMoveType>> frames) {
+public record CompiledBlockMoveAnimation(List<BlockAnimationFrame> frames) {
 
 }

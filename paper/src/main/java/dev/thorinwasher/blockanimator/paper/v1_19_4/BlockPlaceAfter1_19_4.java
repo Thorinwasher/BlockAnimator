@@ -5,12 +5,16 @@ import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 import dev.thorinwasher.blockanimator.paper.EntityUtils;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
-import org.joml.Vector3d;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
+import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +62,19 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockData> {
         });
         blockSupplier.placeBlocks(entitiesToRemove);
         entitiesToRemove.clear();
+    }
+
+    @Override
+    public void setTransform(ImmutableVector3i identifier, Matrix4f transform) {
+        BlockDisplay blockDisplay = blockDisplays.get(identifier);
+        Transformation transformation = blockDisplay.getTransformation();
+        Quaternionf rotation = new Quaternionf();
+        transform.getNormalizedRotation(rotation);
+        Vector3f translation = new Vector3f();
+        transform.getTranslation(translation);
+        Vector3f scale = new Vector3f();
+        transform.getScale(scale);
+        blockDisplay.setTransformation(new Transformation(translation, transformation.getLeftRotation(), scale, rotation));
     }
 
     private BlockDisplay getOrSpawnBlockDisplay(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier) {

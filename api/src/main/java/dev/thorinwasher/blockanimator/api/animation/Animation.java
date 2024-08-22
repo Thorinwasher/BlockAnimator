@@ -24,7 +24,7 @@ public interface Animation<B> {
     @ApiStatus.Internal
     static void mergeBlockAnimationToFrames(CompiledBlockMoveAnimation
                                                     compiledBlockMoveAnimation, Map<Integer, AnimationFrame> frames, ImmutableVector3i target, int frame) {
-        for (TwoTuple<Vector3d, BlockMoveType> newPosition : compiledBlockMoveAnimation.frames()) {
+        for (BlockAnimationFrame newPosition : compiledBlockMoveAnimation.frames()) {
             frames.computeIfAbsent(frame, ignored -> new AnimationFrame(new HashMap<>())).currentToDestination().put(target, newPosition);
             frame++;
         }

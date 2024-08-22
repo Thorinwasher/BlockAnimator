@@ -4,10 +4,12 @@ import dev.thorinwasher.blockanimator.api.animator.BlockAnimator;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
-import org.joml.Vector3d;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
+import org.joml.Matrix4f;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,14 @@ public class BlockPlaceDirectly1_17_1 implements BlockAnimator<BlockData> {
     @Override
     public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
         // All blocks are already placed directly, nothing more needs to be done
+    }
+
+    @Override
+    public void setTransform(ImmutableVector3i identifier, Matrix4f transform) {
+        BlockDisplayEquivalent blockDisplayEquivalent = armorStands.get(identifier);
+        Vector3f scale = new Vector3f();
+        transform.getScale(scale);
+        blockDisplayEquivalent.setSize(scale.length());
     }
 
     private BlockDisplayEquivalent spawnOrGetFallingBlock(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier) {

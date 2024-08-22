@@ -9,7 +9,10 @@ import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.metadata.display.BlockDisplayMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,5 +74,16 @@ public class PlaceBlocksAfterBlockAnimator implements BlockAnimator<Block> {
             entity.remove();
         });
         entitiesToRemove.clear();
+    }
+
+    @Override
+    public void setTransform(ImmutableVector3i identifier, Matrix4f transform) {
+        BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockEntityMap.get(identifier).getEntityMeta();
+        Quaternionf rotation = new Quaternionf();
+        transform.rotation(rotation);
+        blockDisplayMeta.setRightRotation(new float[]{rotation.x, rotation.y, rotation.z, rotation.w});
+        Vector3f scale = new Vector3f();
+        transform.getScale(scale);
+        blockDisplayMeta.setScale(VectorConversion.toVec(new Vector3d(scale)));
     }
 }

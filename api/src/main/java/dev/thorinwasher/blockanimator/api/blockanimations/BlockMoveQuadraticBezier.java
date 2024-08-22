@@ -1,10 +1,12 @@
 package dev.thorinwasher.blockanimator.api.blockanimations;
 
+import dev.thorinwasher.blockanimator.api.animation.BlockAnimationFrame;
 import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.FixedStepsPathCompletionSupplier;
 import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.PathCompletionSupplier;
-import dev.thorinwasher.blockanimator.api.container.TwoTuple;
+import dev.thorinwasher.blockanimator.api.blockanimations.transformation.BlockTransformation;
 import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 import org.joml.GeometryUtils;
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -20,6 +22,7 @@ public class BlockMoveQuadraticBezier implements BlockMoveAnimation {
     private final PathCompletionSupplier pathCompletionSupplier;
     private static final Random RANDOM = new Random();
     private final Supplier<Double> controlPointLengthSupplier;
+    private BlockTransformation blockTransform;
 
     public BlockMoveQuadraticBezier(Function<Vector3d, Vector3d> from, PathCompletionSupplier pathCompletionSupplier, Supplier<Double> controlPointLengthSupplier) {
         this.from = from;
@@ -47,30 +50,31 @@ public class BlockMoveQuadraticBezier implements BlockMoveAnimation {
         return new CompiledBlockMoveAnimation(calculateBezierCurve(fromValue, to, controlPoint, steps));
     }
 
-    private static double bezierCurveLength(Vector3d from, Vector3d to, Vector3d controlPoint) {
+    private double bezierCurveLength(Vector3d from, Vector3d to, Vector3d controlPoint) {
         List<Double> steps = new FixedStepsPathCompletionSupplier(20).compile(1D);
-        List<TwoTuple<Vector3d, BlockMoveType>> bezierCurve = calculateBezierCurve(from, to, controlPoint, steps);
+        List<BlockAnimationFrame> bezierCurve = calculateBezierCurve(from, to, controlPoint, steps);
         Vector3d previous = null;
         double length = 0;
-        for (TwoTuple<Vector3d, BlockMoveType> point : bezierCurve) {
+        for (BlockAnimationFrame point : bezierCurve) {
             if (previous != null) {
-                length += previous.distance(point.first());
+                length += previous.distance(point.position());
             }
-            previous = point.first();
+            previous = point.position();
         }
         return length;
     }
 
-    private static List<TwoTuple<Vector3d, BlockMoveType>> calculateBezierCurve(Vector3d from, Vector3d to, Vector3d controlPoint, List<Double> steps) {
-        List<TwoTuple<Vector3d, BlockMoveType>> bezierCurve = new ArrayList<>(steps.size());
+    private List<BlockAnimationFrame> calculateBezierCurve(Vector3d from, Vector3d to, Vector3d controlPoint, List<Double> steps) {
+        List<BlockAnimationFrame> bezierCurve = new ArrayList<>(steps.size());
         for (double time : steps) {
             double A = Math.pow(1 - time, 2);
             double B = 2 * (1 - time) * time;
             double C = Math.pow(time, 2);
             Vector3d vectorPoint = new Vector3d(from).mul(A).add(new Vector3d(controlPoint).mul(B)).add(new Vector3d(to).mul(C));
-            bezierCurve.add(new TwoTuple<>(vectorPoint, BlockMoveType.MOVE));
+            Matrix4f matrix4f = blockTransform == null ? null : blockTransform.getTransform(time);
+            bezierCurve.add(new BlockAnimationFrame(vectorPoint, BlockMoveType.MOVE, matrix4f));
         }
-        bezierCurve.add(new TwoTuple<>(to, BlockMoveType.PLACE));
+        bezierCurve.add(new BlockAnimationFrame(to, BlockMoveType.PLACE, new Matrix4f()));
         return bezierCurve;
     }
 }

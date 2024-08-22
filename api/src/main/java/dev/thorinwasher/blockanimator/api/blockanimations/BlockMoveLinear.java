@@ -1,17 +1,20 @@
 package dev.thorinwasher.blockanimator.api.blockanimations;
 
+import dev.thorinwasher.blockanimator.api.animation.BlockAnimationFrame;
 import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.PathCompletionSupplier;
-import dev.thorinwasher.blockanimator.api.container.TwoTuple;
+import dev.thorinwasher.blockanimator.api.blockanimations.transformation.BlockTransformation;
 import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public class BlockMoveLinear implements BlockMoveAnimation {
     private final Function<Vector3d, Vector3d> from;
     private final PathCompletionSupplier pathCompletionSupplier;
+    private BlockTransformation blockTransform;
 
     public BlockMoveLinear(Function<Vector3d, Vector3d> from, PathCompletionSupplier pathCompletionSupplier) {
         this.pathCompletionSupplier = pathCompletionSupplier;
@@ -27,10 +30,13 @@ public class BlockMoveLinear implements BlockMoveAnimation {
         Vector3d to = identifier.asVector3d();
         Vector3d fromValue = from.apply(to);
         List<Double> compiledPathCompletion = pathCompletionSupplier.compile(to.distance(fromValue));
-        Stream<TwoTuple<Vector3d, BlockMoveType>> points = compiledPathCompletion.stream()
-                .map(pathCompletion -> new Vector3d(fromValue).mul(1 - pathCompletion).add(new Vector3d(to).mul(pathCompletion)))
-                .map(Vector3d -> new TwoTuple<>(Vector3d, BlockMoveType.MOVE));
-        return new CompiledBlockMoveAnimation(Stream.concat(points, Stream.of(new TwoTuple<>(to, BlockMoveType.PLACE))).
-                toList());
+        List<BlockAnimationFrame> frames = new ArrayList<>();
+        for (double pathCompletion : compiledPathCompletion) {
+            Vector3d point = new Vector3d(fromValue).mul(1 - pathCompletion).add(new Vector3d(to).mul(pathCompletion));
+            Matrix4f transform = this.blockTransform == null ? null : blockTransform.getTransform(pathCompletion);
+            frames.add(new BlockAnimationFrame(point, BlockMoveType.MOVE, transform));
+        }
+        frames.add(new BlockAnimationFrame(to, BlockMoveType.PLACE, new Matrix4f()));
+        return new CompiledBlockMoveAnimation(frames);
     }
 }

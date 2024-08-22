@@ -6,10 +6,10 @@ import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 import dev.thorinwasher.blockanimator.paper.ClassChecker;
 import dev.thorinwasher.blockanimator.paper.v1_17_1.BlockPlaceAfter1_17_1;
 import dev.thorinwasher.blockanimator.paper.v1_19_4.BlockPlaceAfter1_19_4;
-import org.joml.Vector3d;
 import org.bukkit.World;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
+import org.joml.Matrix4f;
+import org.joml.Vector3d;
 
 public class PlaceBlocksAfterBlockAnimator implements BlockAnimator<BlockData> {
 
@@ -45,5 +45,10 @@ public class PlaceBlocksAfterBlockAnimator implements BlockAnimator<BlockData> {
     @Override
     public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
         handle.finishAnimation(blockSupplier);
+    }
+
+    @Override
+    public void setTransform(ImmutableVector3i identifier, Matrix4f transform) {
+        handle.setTransform(identifier, transform);
     }
 }
