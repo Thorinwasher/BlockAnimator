@@ -11,7 +11,7 @@ import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.LightingChunk;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3d;
 
 public class Main {
 
@@ -35,7 +35,7 @@ public class Main {
         minecraftServer.start(System.getProperty("address", "0.0.0.0"), Integer.getInteger("port", 25565));
     }
 
-    public static Vector3D toVector3D(Point point) {
-        return new Vector3D(point.x(), point.y(), point.z());
+    public static Vector3d toVector3d(Point point) {
+        return new Vector3d(point.x(), point.y(), point.z());
     }
 }

@@ -1,8 +1,8 @@
 package dev.thorinwasher.blockanimator.api.blockanimations;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 
 public interface BlockMoveAnimation {
 
-    CompiledBlockMoveAnimation compile(Vector3D to);
+    CompiledBlockMoveAnimation compile(ImmutableVector3i to);
 }

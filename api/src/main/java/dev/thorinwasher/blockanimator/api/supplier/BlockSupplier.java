@@ -1,17 +1,17 @@
 package dev.thorinwasher.blockanimator.api.supplier;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3d;
 
 import java.util.List;
 
 public interface BlockSupplier<B> {
-    B getBlock(Vector3D targetPosition);
+    B getBlock(ImmutableVector3i targetPosition);
 
-    List<Vector3D> getPositions();
+    List<ImmutableVector3i> getPositions();
 
-    void placeBlock(Vector3D identifier);
+    void placeBlock(ImmutableVector3i identifier);
 
-    default void placeBlocks(List<Vector3D> identifiers) {
+    default void placeBlocks(List<ImmutableVector3i> identifiers) {
         identifiers.forEach(this::placeBlock);
     }
 }

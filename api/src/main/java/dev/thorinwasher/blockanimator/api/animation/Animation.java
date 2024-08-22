@@ -4,7 +4,8 @@ import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveType;
 import dev.thorinwasher.blockanimator.api.blockanimations.CompiledBlockMoveAnimation;
 import dev.thorinwasher.blockanimator.api.container.TwoTuple;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Vector3d;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
@@ -22,8 +23,8 @@ public interface Animation<B> {
 
     @ApiStatus.Internal
     static void mergeBlockAnimationToFrames(CompiledBlockMoveAnimation
-                                                    compiledBlockMoveAnimation, Map<Integer, AnimationFrame> frames, Vector3D target, int frame) {
-        for (TwoTuple<Vector3D, BlockMoveType> newPosition : compiledBlockMoveAnimation.frames()) {
+                                                    compiledBlockMoveAnimation, Map<Integer, AnimationFrame> frames, ImmutableVector3i target, int frame) {
+        for (TwoTuple<Vector3d, BlockMoveType> newPosition : compiledBlockMoveAnimation.frames()) {
             frames.computeIfAbsent(frame, ignored -> new AnimationFrame(new HashMap<>())).currentToDestination().put(target, newPosition);
             frame++;
         }

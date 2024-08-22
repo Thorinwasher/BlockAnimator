@@ -1,7 +1,8 @@
 package dev.thorinwasher.blockanimator.api.timer;
 
 import dev.thorinwasher.blockanimator.api.selector.CompiledBlockSelector;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,12 @@ public class LinearBlockTimer implements BlockTimer {
     }
 
     @Override
-    public List<Vector3D> fetch(CompiledBlockSelector blockSelector, int totalBlockAmount) {
+    public List<ImmutableVector3i> fetch(CompiledBlockSelector blockSelector, int totalBlockAmount) {
         double stepSize = (double) totalBlockAmount / ticks;
         int fetchApproximate = (int) (stepSize * ++currentTick - blocksPulled);
-        List<Vector3D> blocks = new ArrayList<>();
+        List<ImmutableVector3i> blocks = new ArrayList<>();
         while (fetchApproximate >= 0 && totalBlockAmount > blocksPulled + blocks.size()) {
-            List<Vector3D> next = blockSelector.next();
+            List<ImmutableVector3i> next = blockSelector.next();
             blocks.addAll(next);
             fetchApproximate -= next.size();
         }

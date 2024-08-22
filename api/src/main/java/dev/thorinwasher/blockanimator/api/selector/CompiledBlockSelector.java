@@ -1,6 +1,7 @@
 package dev.thorinwasher.blockanimator.api.selector;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +9,14 @@ import java.util.Queue;
 
 public class CompiledBlockSelector {
 
-    private final Queue<List<Vector3D>> queue;
+    private final Queue<List<ImmutableVector3i>> queue;
 
-    public CompiledBlockSelector(Queue<List<Vector3D>> queue) {
+    public CompiledBlockSelector(Queue<List<ImmutableVector3i>> queue) {
         this.queue = queue;
     }
 
-    public List<Vector3D> next() {
-        List<Vector3D> toAdd = queue.poll();
+    public List<ImmutableVector3i> next() {
+        List<ImmutableVector3i> toAdd = queue.poll();
         if (toAdd == null) {
             return new ArrayList<>();
         }

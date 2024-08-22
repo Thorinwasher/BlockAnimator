@@ -41,9 +41,9 @@ public class AnimateCommand extends Command {
             }
             BlockMoveAnimation blockMoveAnimation = switch (context.get(motion)) {
                 case "linear" ->
-                        new BlockMoveLinear(Main.toVector3D(player.getPosition()), new EaseOutCubicPathCompletionSupplier(0.2));
+                        new BlockMoveLinear(Main.toVector3d(player.getPosition()), new EaseOutCubicPathCompletionSupplier(0.2));
                 case "quadratic" ->
-                        new BlockMoveQuadraticBezier(Main.toVector3D(player.getPosition()), new EaseOutCubicPathCompletionSupplier(0.2), () -> 10D);
+                        new BlockMoveQuadraticBezier(Main.toVector3d(player.getPosition()), new EaseOutCubicPathCompletionSupplier(0.2), () -> 10D);
                 default -> throw new IllegalArgumentException("Unknown block animator");
             };
             BlockSupplier<Block> blockSupplier = BlockSupplierUtil.getBlockSupplier(player, context.get(size), player.getInstance());

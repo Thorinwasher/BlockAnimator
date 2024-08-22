@@ -1,7 +1,7 @@
 package dev.thorinwasher.blockanimator.api.selector;
 
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 import dev.thorinwasher.blockanimator.api.util.Directions;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.*;
 
@@ -9,52 +9,52 @@ public class GrowingDendriteSelector implements BlockSelector {
 
     private static final Random RANDOM = new Random();
     private final double growthDirectionAddChance;
-    private final Map<Vector3D, Set<Vector3D>> growthMap = new HashMap<>();
+    private final Map<ImmutableVector3i, Set<ImmutableVector3i>> growthMap = new HashMap<>();
 
     public GrowingDendriteSelector(double growthDirectionAddChance) {
         this.growthDirectionAddChance = growthDirectionAddChance;
     }
 
     @Override
-    public CompiledBlockSelector compile(List<Vector3D> blocks) {
+    public CompiledBlockSelector compile(List<ImmutableVector3i> blocks) {
 
-        LinkedList<List<Vector3D>> points = new LinkedList<>();
+        LinkedList<List<ImmutableVector3i>> points = new LinkedList<>();
         points.add(newStartingSeed(blocks));
-        Set<Vector3D> blockSet = new HashSet<>(blocks);
+        Set<ImmutableVector3i> blockSet = new HashSet<>(blocks);
         while (growthMap.size() < blocks.size()) {
             points.add(nextStep(blockSet));
         }
         return new CompiledBlockSelector(points);
     }
 
-    private List<Vector3D> nextStep(Set<Vector3D> blocks) {
-        List<Vector3D> output = new ArrayList<>();
-        Map<Vector3D, Set<Vector3D>> tempGrowthMap = new HashMap<>(growthMap);
-        for (Map.Entry<Vector3D, Set<Vector3D>> entry : tempGrowthMap.entrySet()) {
-            for (Vector3D direction : entry.getValue()) {
-                Vector3D growth = entry.getKey().add(direction);
+    private List<ImmutableVector3i> nextStep(Set<ImmutableVector3i> blocks) {
+        List<ImmutableVector3i> output = new ArrayList<>();
+        Map<ImmutableVector3i, Set<ImmutableVector3i>> tempGrowthMap = new HashMap<>(growthMap);
+        for (Map.Entry<ImmutableVector3i, Set<ImmutableVector3i>> entry : tempGrowthMap.entrySet()) {
+            for (ImmutableVector3i direction : entry.getValue()) {
+                ImmutableVector3i growth = entry.getKey().add(direction);
                 if (!growthMap.containsKey(growth) && blocks.contains(growth)) {
                     output.add(growth);
                     growthMap.put(growth, new HashSet<>(Set.of(direction)));
                 }
             }
             if (RANDOM.nextDouble() < growthDirectionAddChance && entry.getValue().size() < Directions.DIRECTIONS.size()) {
-                List<Vector3D> possibleDirectionsToAdd = new ArrayList<>(Directions.DIRECTIONS);
+                List<ImmutableVector3i> possibleDirectionsToAdd = new ArrayList<>(Directions.DIRECTIONS);
                 possibleDirectionsToAdd.removeAll(entry.getValue());
                 growthMap.get(entry.getKey()).add(possibleDirectionsToAdd.get(RANDOM.nextInt(possibleDirectionsToAdd.size())));
             }
         }
         if (output.isEmpty()) {
-            List<Vector3D> leftoverBlocks = blocks.stream()
-                    .filter(vector3D -> !growthMap.containsKey(vector3D))
+            List<ImmutableVector3i> leftoverBlocks = blocks.stream()
+                    .filter(Vector3d -> !growthMap.containsKey(Vector3d))
                     .toList();
             return newStartingSeed(leftoverBlocks);
         }
         return output;
     }
 
-    private List<Vector3D> newStartingSeed(List<Vector3D> blocks) {
-        Vector3D startingPoint = blocks.get(RANDOM.nextInt(blocks.size()));
+    private List<ImmutableVector3i> newStartingSeed(List<ImmutableVector3i> blocks) {
+        ImmutableVector3i startingPoint = blocks.get(RANDOM.nextInt(blocks.size()));
         growthMap.put(startingPoint, new HashSet<>(Directions.DIRECTIONS));
         return new ArrayList<>(List.of(startingPoint));
     }

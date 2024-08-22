@@ -14,7 +14,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation(project(":minestom"))
     implementation(project(":api"))
-    implementation("org.apache.commons:commons-math3:3.6.1")
+    implementation("org.joml:joml:1.10.8")
     implementation("net.minestom:minestom-snapshots:2be6f9c507")
     implementation("dev.hollowcube:schem:1.2.0")
 }

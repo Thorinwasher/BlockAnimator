@@ -2,9 +2,10 @@ package dev.thorinwasher.blockanimator.api.animation;
 
 import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveType;
 import dev.thorinwasher.blockanimator.api.container.TwoTuple;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Vector3d;
 
 import java.util.Map;
 
-public record AnimationFrame(Map<Vector3D, TwoTuple<Vector3D, BlockMoveType>> currentToDestination) {
+public record AnimationFrame(Map<ImmutableVector3i, TwoTuple<Vector3d, BlockMoveType>> currentToDestination) {
 }

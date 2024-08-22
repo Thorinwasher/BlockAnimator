@@ -2,7 +2,7 @@ package dev.thorinwasher.blockanimator.paper.v1_17_1;
 
 import dev.thorinwasher.blockanimator.paper.EntityUtils;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3d;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
@@ -18,12 +18,12 @@ public class BlockDisplayEquivalent {
 
 
     private final BlockData blockData;
-    private final Vector3D position;
+    private final Vector3d position;
     private final World world;
     private float size;
     private ArmorStand armorStand;
 
-    public BlockDisplayEquivalent(BlockData blockData, Vector3D position, World world, float size) {
+    public BlockDisplayEquivalent(BlockData blockData, Vector3d position, World world, float size) {
         this.blockData = blockData;
         this.position = position;
         this.size = size;
@@ -39,7 +39,7 @@ public class BlockDisplayEquivalent {
         updateSize();
     }
 
-    public void move(Vector3D to) {
+    public void move(Vector3d to) {
         Location toLocation = determinePositionFromSize(to);
         if (armorStand.getPassengers().isEmpty()) {
             armorStand.teleport(toLocation);
@@ -71,7 +71,7 @@ public class BlockDisplayEquivalent {
         if (size == 1F) {
             armorStand.setSmall(false);
             if (armorStand.getPassengers().isEmpty()) {
-                FallingBlock fallingBlock = EntityUtils.spawnFallingBlock(world, blockData, VectorConverter.toVector3D(armorStand.getLocation()));
+                FallingBlock fallingBlock = EntityUtils.spawnFallingBlock(world, blockData, VectorConverter.toVector3d(armorStand.getLocation()));
                 armorStand.addPassenger(fallingBlock);
             }
             return;
@@ -90,7 +90,7 @@ public class BlockDisplayEquivalent {
         armorStand.getEquipment().clear();
     }
 
-    private Location determinePositionFromSize(Vector3D position) {
+    private Location determinePositionFromSize(Vector3d position) {
         if (size == 1F) {
             return VectorConverter.toLocation(position, world).subtract(-0.5, 1.475, -0.5);
         }

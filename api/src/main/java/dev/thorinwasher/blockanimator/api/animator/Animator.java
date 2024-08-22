@@ -5,7 +5,8 @@ import dev.thorinwasher.blockanimator.api.animation.AnimationFrame;
 import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveType;
 import dev.thorinwasher.blockanimator.api.container.TwoTuple;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Vector3d;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -34,9 +35,9 @@ public class Animator<B> {
         }
         AnimationFrame frame = animation.getNext();
         BlockSupplier<B> supplier = animation.supplier();
-        for (Map.Entry<Vector3D, TwoTuple<Vector3D, BlockMoveType>> entry : frame.currentToDestination().entrySet()) {
-            Vector3D identifier = entry.getKey();
-            Vector3D position = entry.getValue().first();
+        for (Map.Entry<ImmutableVector3i, TwoTuple<Vector3d, BlockMoveType>> entry : frame.currentToDestination().entrySet()) {
+            ImmutableVector3i identifier = entry.getKey();
+            Vector3d position = entry.getValue().first();
             switch (entry.getValue().second()) {
                 case PLACE -> blockAnimator.blockPlace(identifier, supplier);
                 case MOVE -> blockAnimator.blockMove(identifier, position, supplier);

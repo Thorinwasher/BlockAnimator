@@ -1,17 +1,22 @@
 package dev.thorinwasher.blockanimator.paper;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Vector3d;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 public class VectorConverter {
 
 
-    public static Location toLocation(Vector3D vector3D, World world) {
-        return new Location(world, vector3D.getX(), vector3D.getY(), vector3D.getZ());
+    public static Location toLocation(Vector3d Vector3d, World world) {
+        return new Location(world, Vector3d.x(), Vector3d.y(), Vector3d.z());
     }
 
-    public static Vector3D toVector3D(Location location) {
-        return new Vector3D(location.getX(), location.getY(), location.getZ());
+    public static Location toLocation(ImmutableVector3i Vector3d, World world) {
+        return new Location(world, Vector3d.x(), Vector3d.y(), Vector3d.z());
+    }
+
+    public static Vector3d toVector3d(Location location) {
+        return new Vector3d(location.getX(), location.getY(), location.getZ());
     }
 }

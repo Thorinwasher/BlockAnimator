@@ -3,13 +3,14 @@ package dev.thorinwasher.blockanimator.minestom;
 import dev.thorinwasher.blockanimator.api.algorithms.ManhatanNearest;
 import dev.thorinwasher.blockanimator.api.animator.BlockAnimator;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.metadata.display.BlockDisplayMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3d;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
 
-    private final Map<Vector3D, Entity> blockEntityMap = new HashMap<>();
+    private final Map<ImmutableVector3i, Entity> blockEntityMap = new HashMap<>();
     private final Instance instance;
 
     public PlaceBlocksDirectlyBlockAnimator(Instance instance) {
@@ -25,7 +26,7 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
     }
 
     @Override
-    public void blockMove(Vector3D identifier, Vector3D position, BlockSupplier<Block> blockSupplier) {
+    public void blockMove(ImmutableVector3i identifier, Vector3d position, BlockSupplier<Block> blockSupplier) {
         Entity blockDisplay = spawnOrGetBLockDisplay(identifier, position, blockSupplier);
         Pos from = blockDisplay.getPosition();
         Vec delta = VectorConversion.toVec(position).sub(from);
@@ -34,7 +35,7 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
     }
 
     @Override
-    public void blockPlace(Vector3D identifier, BlockSupplier<Block> supplier) {
+    public void blockPlace(ImmutableVector3i identifier, BlockSupplier<Block> supplier) {
         Entity blockDisplay = blockEntityMap.remove(identifier);
         if (blockDisplay != null) {
             blockDisplay.remove();
@@ -43,16 +44,16 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
     }
 
     @Override
-    public void blockDestroy(Vector3D identifier) {
+    public void blockDestroy(ImmutableVector3i identifier) {
         instance.setBlock(VectorConversion.toVec(identifier), Block.AIR);
     }
 
-    private Entity spawnOrGetBLockDisplay(Vector3D identifier, Vector3D startingPosition, BlockSupplier<Block> blockSupplier) {
+    private Entity spawnOrGetBLockDisplay(ImmutableVector3i identifier, Vector3d startingPosition, BlockSupplier<Block> blockSupplier) {
         Entity blockDisplay = blockEntityMap.get(identifier);
         if (blockDisplay == null) {
             Block block = blockSupplier.getBlock(identifier);
-            Vector3D middlePoint = identifier.scalarMultiply(0.5).add(startingPosition.scalarMultiply(0.5));
-            Optional<Vector3D> position = ManhatanNearest.findClosestPosition(middlePoint, vector3D -> instance.getBlock(VectorConversion.toVec(vector3D)).isAir(), 10);
+            Vector3d middlePoint = identifier.asVector3d().mul(0.5).add(new Vector3d(startingPosition).mul(0.5));
+            Optional<Vector3d> position = ManhatanNearest.findClosestPosition(middlePoint, Vector3d -> instance.getBlock(VectorConversion.toVec(Vector3d)).isAir(), 10);
             blockDisplay = BlockAnimationUtils.spawnBlockDisplay(position.orElse(startingPosition), block, instance);
             blockEntityMap.put(identifier, blockDisplay);
         }

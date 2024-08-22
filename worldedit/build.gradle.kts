@@ -19,7 +19,7 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation("org.apache.commons:commons-math3:3.6.1")
+    implementation("org.joml:joml:1.10.8")
     compileOnly("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")

@@ -1,15 +1,16 @@
 package dev.thorinwasher.blockanimator.worldedit;
 
 import com.sk89q.worldedit.math.BlockVector3;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Vector3d;
 
 public class WEVectorConverter {
 
-    public static BlockVector3 toBlockVector3(Vector3D vector3D) {
-        return BlockVector3.at(vector3D.getX(), vector3D.getY(), vector3D.getZ());
+    public static BlockVector3 toBlockVector3(ImmutableVector3i Vector3d) {
+        return BlockVector3.at(Vector3d.x(), Vector3d.y(), Vector3d.z());
     }
 
-    public static Vector3D toVector3D(BlockVector3 blockVector3) {
-        return new Vector3D(blockVector3.getX(), blockVector3.getY(), blockVector3.getZ());
+    public static ImmutableVector3i toImmutableVector3i(BlockVector3 blockVector3) {
+        return new ImmutableVector3i(blockVector3.getX(), blockVector3.getY(), blockVector3.getZ());
     }
 }

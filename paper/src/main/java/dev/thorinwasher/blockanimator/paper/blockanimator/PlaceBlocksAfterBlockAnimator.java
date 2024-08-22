@@ -2,10 +2,11 @@ package dev.thorinwasher.blockanimator.paper.blockanimator;
 
 import dev.thorinwasher.blockanimator.api.animator.BlockAnimator;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 import dev.thorinwasher.blockanimator.paper.ClassChecker;
 import dev.thorinwasher.blockanimator.paper.v1_17_1.BlockPlaceAfter1_17_1;
 import dev.thorinwasher.blockanimator.paper.v1_19_4.BlockPlaceAfter1_19_4;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3d;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
@@ -27,17 +28,17 @@ public class PlaceBlocksAfterBlockAnimator implements BlockAnimator<BlockData> {
     }
 
     @Override
-    public void blockMove(Vector3D identifier, Vector3D to, BlockSupplier<BlockData> blockSupplier) {
+    public void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<BlockData> blockSupplier) {
         handle.blockMove(identifier, to, blockSupplier);
     }
 
     @Override
-    public void blockPlace(Vector3D identifier, BlockSupplier<BlockData> blockSupplier) {
+    public void blockPlace(ImmutableVector3i identifier, BlockSupplier<BlockData> blockSupplier) {
         handle.blockPlace(identifier, blockSupplier);
     }
 
     @Override
-    public void blockDestroy(Vector3D identifier) {
+    public void blockDestroy(ImmutableVector3i identifier) {
         handle.blockDestroy(identifier);
     }
 

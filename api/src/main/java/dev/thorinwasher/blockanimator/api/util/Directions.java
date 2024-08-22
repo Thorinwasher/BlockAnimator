@@ -1,18 +1,19 @@
 package dev.thorinwasher.blockanimator.api.util;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Vector3d;
 
 import java.util.List;
 
 public class Directions {
-    public static final List<Vector3D> DIRECTIONS = getDirections();
+    public static final List<ImmutableVector3i> DIRECTIONS = getDirections();
 
-    private static List<Vector3D> getDirections() {
-        return List.of(new Vector3D(1, 0, 0),
-                new Vector3D(-1, 0, 0),
-                new Vector3D(0, 1, 0),
-                new Vector3D(0, -1, 0),
-                new Vector3D(0, 0, 1),
-                new Vector3D(0, 0, -1));
+    private static List<ImmutableVector3i> getDirections() {
+        return List.of(new ImmutableVector3i(1, 0, 0),
+                new ImmutableVector3i(-1, 0, 0),
+                new ImmutableVector3i(0, 1, 0),
+                new ImmutableVector3i(0, -1, 0),
+                new ImmutableVector3i(0, 0, 1),
+                new ImmutableVector3i(0, 0, -1));
     }
 }

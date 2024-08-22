@@ -5,8 +5,9 @@ import dev.thorinwasher.blockanimator.api.blockanimations.CompiledBlockMoveAnima
 import dev.thorinwasher.blockanimator.api.selector.BlockSelector;
 import dev.thorinwasher.blockanimator.api.selector.CompiledBlockSelector;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 import dev.thorinwasher.blockanimator.api.timer.BlockTimer;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3d;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,11 +38,11 @@ public class TimerAnimation<B> implements Animation<B> {
     @Override
     public void compile() {
         try {
-            List<Vector3D> totalBlocks = blockSupplier.getPositions();
+            List<ImmutableVector3i> totalBlocks = blockSupplier.getPositions();
             int totalBlockAmount = totalBlocks.size();
             CompiledBlockSelector blockSelector = this.blockSelector.compile(totalBlocks);
             while (blockTimer.hasNext(totalBlockAmount)) {
-                for (Vector3D target : blockTimer.fetch(blockSelector, totalBlockAmount)) {
+                for (ImmutableVector3i target : blockTimer.fetch(blockSelector, totalBlockAmount)) {
                     CompiledBlockMoveAnimation compiledBlockMoveAnimation = blockMoveAnimation.compile(target);
                     Animation.mergeBlockAnimationToFrames(compiledBlockMoveAnimation, frames, target, currentCompiledFrame.get());
                 }

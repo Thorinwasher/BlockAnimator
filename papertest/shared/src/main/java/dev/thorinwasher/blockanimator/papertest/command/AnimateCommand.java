@@ -20,7 +20,7 @@ import dev.thorinwasher.blockanimator.api.timer.LinearBlockTimer;
 import dev.thorinwasher.blockanimator.paper.blockanimator.PlaceBlocksDirectlyBlockAnimator;
 import dev.thorinwasher.blockanimator.papertest.supplier.TestSupplier;
 import dev.thorinwasher.blockanimator.worldedit.PaperClipboardBlockSupplier;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3d;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -75,9 +75,9 @@ public class AnimateCommand implements CommandExecutor {
     private BlockMoveAnimation getMovement(String argument, Location playerLocation) {
         return switch (argument) {
             case "linear" ->
-                    new BlockMoveLinear(new Vector3D(playerLocation.getX(), playerLocation.getY(), playerLocation.getZ()), new EaseOutCubicPathCompletionSupplier(0.2));
+                    new BlockMoveLinear(new Vector3d(playerLocation.getX(), playerLocation.getY(), playerLocation.getZ()), new EaseOutCubicPathCompletionSupplier(0.2));
             case "quadratic" ->
-                    new BlockMoveQuadraticBezier(new Vector3D(playerLocation.getX(), playerLocation.getY(), playerLocation.getZ()), new EaseOutCubicPathCompletionSupplier(0.2), () -> 10D);
+                    new BlockMoveQuadraticBezier(new Vector3d(playerLocation.getX(), playerLocation.getY(), playerLocation.getZ()), new EaseOutCubicPathCompletionSupplier(0.2), () -> 10D);
             default -> throw new IllegalArgumentException();
         };
     }

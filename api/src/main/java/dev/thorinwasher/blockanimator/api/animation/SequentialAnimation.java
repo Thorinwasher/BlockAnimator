@@ -8,7 +8,8 @@ import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.PathCom
 import dev.thorinwasher.blockanimator.api.selector.BlockSelector;
 import dev.thorinwasher.blockanimator.api.selector.CompiledBlockSelector;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Vector3d;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,8 +20,8 @@ public class SequentialAnimation<B> implements Animation<B> {
     private final BlockSupplier<B> blockSupplier;
     private final PathCompletionSupplier pathCompletionSupplier;
     private final ConcurrentHashMap<Integer, AnimationFrame> frames = new ConcurrentHashMap<>();
-    private final Set<Vector3D> placedBlocks = new HashSet<>();
-    private final Map<Vector3D, Integer> blocksCurrentlyAnimating = new HashMap<>();
+    private final Set<ImmutableVector3i> placedBlocks = new HashSet<>();
+    private final Map<ImmutableVector3i, Integer> blocksCurrentlyAnimating = new HashMap<>();
     private final int buffer;
     private final BlockSelector blockSelector;
     private AtomicInteger currentFrame = new AtomicInteger();
@@ -34,7 +35,7 @@ public class SequentialAnimation<B> implements Animation<B> {
         this.buffer = buffer;
     }
 
-    private Vector3D getBlockFrom(Vector3D blockTo) {
+    private Vector3d getBlockFrom(Vector3d blockTo) {
         return ManhatanNearest.findClosestPosition(blockTo, placedBlocks::contains, 4).orElse(blockTo);
     }
 
@@ -43,11 +44,11 @@ public class SequentialAnimation<B> implements Animation<B> {
         try {
             BlockMoveAnimation blockMoveAnimation = new BlockMoveLinear(this::getBlockFrom, pathCompletionSupplier);
             CompiledBlockSelector compiledBlockSelector = blockSelector.compile(blockSupplier.getPositions());
-            List<Vector3D> next = compiledBlockSelector.next();
+            List<ImmutableVector3i> next = compiledBlockSelector.next();
             while (next != null && !next.isEmpty()) {
                 int current = currentCompiledFrame.get();
                 if (blocksCurrentlyAnimating.isEmpty()) {
-                    for (Vector3D positionToAnimate : next) {
+                    for (ImmutableVector3i positionToAnimate : next) {
                         CompiledBlockMoveAnimation compiledBlockMoveAnimation = blockMoveAnimation.compile(positionToAnimate);
                         int endFrame = compiledBlockMoveAnimation.frames().size() + current - 1;
                         blocksCurrentlyAnimating.put(positionToAnimate, endFrame);
@@ -67,8 +68,8 @@ public class SequentialAnimation<B> implements Animation<B> {
     }
 
     private void updatePlacedBlocks(int current) {
-        List<Vector3D> toRemove = new ArrayList<>();
-        for (Map.Entry<Vector3D, Integer> entry : blocksCurrentlyAnimating.entrySet()) {
+        List<ImmutableVector3i> toRemove = new ArrayList<>();
+        for (Map.Entry<ImmutableVector3i, Integer> entry : blocksCurrentlyAnimating.entrySet()) {
             if (entry.getValue() <= current + 1) {
                 toRemove.add(entry.getKey());
             }

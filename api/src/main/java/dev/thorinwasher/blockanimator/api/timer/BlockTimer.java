@@ -1,7 +1,8 @@
 package dev.thorinwasher.blockanimator.api.timer;
 
 import dev.thorinwasher.blockanimator.api.selector.CompiledBlockSelector;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
+import org.joml.Vector3d;
 
 import java.util.List;
 
@@ -9,5 +10,5 @@ public interface BlockTimer {
 
     boolean hasNext(int totalBlockAmount);
 
-    List<Vector3D> fetch(CompiledBlockSelector blockSelector, int totalBlockAmount);
+    List<ImmutableVector3i> fetch(CompiledBlockSelector blockSelector, int totalBlockAmount);
 }

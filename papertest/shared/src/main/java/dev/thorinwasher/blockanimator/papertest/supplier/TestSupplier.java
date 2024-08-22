@@ -1,8 +1,9 @@
 package dev.thorinwasher.blockanimator.papertest.supplier;
 
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
+import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 import dev.thorinwasher.blockanimator.paper.VectorConverter;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.joml.Vector3d;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -24,17 +25,17 @@ public class TestSupplier implements BlockSupplier<BlockData> {
 
 
     @Override
-    public BlockData getBlock(Vector3D targetPosition) {
+    public BlockData getBlock(ImmutableVector3i targetPosition) {
         return material.createBlockData();
     }
 
     @Override
-    public List<Vector3D> getPositions() {
-        List<Vector3D> output = new ArrayList<>();
+    public List<ImmutableVector3i> getPositions() {
+        List<ImmutableVector3i> output = new ArrayList<>();
         for (int dx = 0; dx < size; dx++) {
             for (int dy = 0; dy < size; dy++) {
                 for (int dz = 0; dz < size; dz++) {
-                    output.add(new Vector3D(corner.getX() + dx, corner.getY() + dy, corner.getZ() + dz));
+                    output.add(new ImmutableVector3i(corner.getBlockX() + dx, corner.getBlockY() + dy, corner.getBlockZ() + dz));
                 }
             }
         }
@@ -42,7 +43,7 @@ public class TestSupplier implements BlockSupplier<BlockData> {
     }
 
     @Override
-    public void placeBlock(Vector3D identifier) {
+    public void placeBlock(ImmutableVector3i identifier) {
         VectorConverter.toLocation(identifier, corner.getWorld()).getBlock().setType(material);
     }
 }
