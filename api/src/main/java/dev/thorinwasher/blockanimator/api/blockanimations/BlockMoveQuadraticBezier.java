@@ -67,7 +67,7 @@ public class BlockMoveQuadraticBezier implements BlockMoveAnimation {
             double A = Math.pow(1 - time, 2);
             double B = 2 * (1 - time) * time;
             double C = Math.pow(time, 2);
-            Vector3d vectorPoint = new Vector3d(from).mul(A).add(controlPoint.mul(B)).add(new Vector3d(to).mul(C));
+            Vector3d vectorPoint = new Vector3d(from).mul(A).add(new Vector3d(controlPoint).mul(B)).add(new Vector3d(to).mul(C));
             bezierCurve.add(new TwoTuple<>(vectorPoint, BlockMoveType.MOVE));
         }
         bezierCurve.add(new TwoTuple<>(to, BlockMoveType.PLACE));

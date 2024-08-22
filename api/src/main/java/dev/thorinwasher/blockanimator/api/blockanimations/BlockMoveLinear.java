@@ -28,7 +28,7 @@ public class BlockMoveLinear implements BlockMoveAnimation {
         Vector3d fromValue = from.apply(to);
         List<Double> compiledPathCompletion = pathCompletionSupplier.compile(to.distance(fromValue));
         Stream<TwoTuple<Vector3d, BlockMoveType>> points = compiledPathCompletion.stream()
-                .map(pathCompletion -> fromValue.mul(1 - pathCompletion).add(new Vector3d(to).mul(pathCompletion)))
+                .map(pathCompletion -> new Vector3d(fromValue).mul(1 - pathCompletion).add(new Vector3d(to).mul(pathCompletion)))
                 .map(Vector3d -> new TwoTuple<>(Vector3d, BlockMoveType.MOVE));
         return new CompiledBlockMoveAnimation(Stream.concat(points, Stream.of(new TwoTuple<>(to, BlockMoveType.PLACE))).
                 toList());

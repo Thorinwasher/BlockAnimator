@@ -27,7 +27,7 @@ public class ManhatanNearest {
                 int z = remainingDistanceAfterX - y;
                 List<Vector3d> possiblePoints = getPossiblePoints(x, y, z);
                 for (Vector3d possiblePoint : possiblePoints) {
-                    Vector3d point = centerPoint.add(possiblePoint);
+                    Vector3d point = new Vector3d(centerPoint).add(possiblePoint);
                     if (filter.test(point)) {
                         return Optional.of(point);
                     }
