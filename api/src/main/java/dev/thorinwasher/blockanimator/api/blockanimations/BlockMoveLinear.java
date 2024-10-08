@@ -33,7 +33,7 @@ public class BlockMoveLinear implements BlockMoveAnimation {
         List<BlockAnimationFrame> frames = new ArrayList<>();
         for (double pathCompletion : compiledPathCompletion) {
             Vector3d point = new Vector3d(fromValue).mul(1 - pathCompletion).add(new Vector3d(to).mul(pathCompletion));
-            Matrix4f transform = this.blockTransform == null ? null : blockTransform.getTransform(pathCompletion);
+            Matrix4f transform = this.blockTransform == null ? new Matrix4f() : blockTransform.getTransform(pathCompletion);
             frames.add(new BlockAnimationFrame(point, BlockMoveType.MOVE, transform));
         }
         frames.add(new BlockAnimationFrame(to, BlockMoveType.PLACE, new Matrix4f()));
