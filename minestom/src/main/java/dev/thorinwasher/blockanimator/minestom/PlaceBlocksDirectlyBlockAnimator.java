@@ -29,12 +29,13 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
     }
 
     @Override
-    public void blockMove(ImmutableVector3i identifier, Vector3d position, BlockSupplier<Block> blockSupplier) {
+    public void blockMove(ImmutableVector3i identifier, Vector3d position, BlockSupplier<Block> blockSupplier, Matrix4f transform) {
         Entity blockDisplay = spawnOrGetBLockDisplay(identifier, position, blockSupplier);
         Pos from = blockDisplay.getPosition();
         Vec delta = VectorConversion.toVec(position).sub(from);
         BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
         blockDisplayMeta.setTranslation(delta);
+        setTransform(blockDisplay, transform);
     }
 
     @Override
@@ -68,9 +69,8 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
         // Nothing needs to be done here, as the blocks are placed directly
     }
 
-    @Override
-    public void setTransform(ImmutableVector3i identifier, Matrix4f transform) {
-        BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockEntityMap.get(identifier).getEntityMeta();
+    private void setTransform(Entity blockDisplay, Matrix4f transform) {
+        BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
         Quaternionf rotation = new Quaternionf();
         transform.rotation(rotation);
         blockDisplayMeta.setRightRotation(new float[]{rotation.x, rotation.y, rotation.z, rotation.w});

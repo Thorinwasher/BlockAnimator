@@ -34,15 +34,15 @@ public class Animator<B> {
         }
         AnimationFrame frame = animation.getNext();
         BlockSupplier<B> supplier = animation.supplier();
+        blockAnimator.tick();
         for (Map.Entry<ImmutableVector3i, BlockAnimationFrame> entry : frame.currentToDestination().entrySet()) {
             ImmutableVector3i identifier = entry.getKey();
             Vector3d position = entry.getValue().position();
             switch (entry.getValue().moveType()) {
                 case PLACE -> blockAnimator.blockPlace(identifier, supplier);
-                case MOVE -> blockAnimator.blockMove(identifier, position, supplier);
+                case MOVE -> blockAnimator.blockMove(identifier, position, supplier, entry.getValue().transform());
                 case DESTROY -> blockAnimator.blockDestroy(identifier);
             }
-            blockAnimator.setTransform(identifier, entry.getValue().transform());
         }
         return false;
     }

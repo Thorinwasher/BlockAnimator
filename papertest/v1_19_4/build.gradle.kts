@@ -45,7 +45,7 @@ tasks {
             include(project(":paper"))
             include(project(":worldedit"))
             include(project(":papertest:shared"))
-            include(dependency("org.apache.commons:commons-math3:.*"))
+            include(dependency("org.joml:joml:.*"))
         }
     }
 

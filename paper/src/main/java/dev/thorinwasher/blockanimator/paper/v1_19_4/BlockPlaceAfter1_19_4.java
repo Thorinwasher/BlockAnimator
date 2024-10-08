@@ -33,9 +33,10 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockData> {
     }
 
     @Override
-    public void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<BlockData> blockSupplier) {
+    public void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<BlockData> blockSupplier, Matrix4f transform) {
         BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, to, blockSupplier);
         blockDisplay.teleport(VectorConverter.toLocation(to, world));
+        setTransform(blockDisplay, transform);
     }
 
     @Override
@@ -64,9 +65,7 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockData> {
         entitiesToRemove.clear();
     }
 
-    @Override
-    public void setTransform(ImmutableVector3i identifier, Matrix4f transform) {
-        BlockDisplay blockDisplay = blockDisplays.get(identifier);
+    private void setTransform(BlockDisplay blockDisplay, Matrix4f transform) {
         Transformation transformation = blockDisplay.getTransformation();
         Quaternionf rotation = new Quaternionf();
         transform.getNormalizedRotation(rotation);

@@ -33,7 +33,7 @@ tasks {
 
 
     runServer {
-        minecraftVersion("1.17.1")
+        minecraftVersion("1.18.2")
         downloadPlugins {
             url("https://cdn.modrinth.com/data/z4HZZnLr/versions/YSQCH9EW/FastAsyncWorldEdit-Bukkit-2.9.2.jar")
         }
@@ -45,7 +45,7 @@ tasks {
             include(project(":paper"))
             include(project(":worldedit"))
             include(project(":papertest:shared"))
-            include(dependency("org.apache.commons:commons-math3:.*"))
+            include(dependency("org.joml:joml:.*"))
         }
     }
 

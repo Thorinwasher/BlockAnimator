@@ -28,8 +28,8 @@ public class PlaceBlocksAfterBlockAnimator implements BlockAnimator<BlockData> {
     }
 
     @Override
-    public void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<BlockData> blockSupplier) {
-        handle.blockMove(identifier, to, blockSupplier);
+    public void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<BlockData> blockSupplier, Matrix4f transform) {
+        handle.blockMove(identifier, to, blockSupplier, transform);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class PlaceBlocksAfterBlockAnimator implements BlockAnimator<BlockData> {
     }
 
     @Override
-    public void setTransform(ImmutableVector3i identifier, Matrix4f transform) {
-        handle.setTransform(identifier, transform);
+    public void tick() {
+        handle.tick();
     }
 }

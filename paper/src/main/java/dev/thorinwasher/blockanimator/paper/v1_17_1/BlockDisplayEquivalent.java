@@ -1,102 +1,89 @@
 package dev.thorinwasher.blockanimator.paper.v1_17_1;
 
 import dev.thorinwasher.blockanimator.paper.EntityUtils;
-import dev.thorinwasher.blockanimator.paper.VectorConverter;
-import org.joml.Vector3d;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
+import org.jetbrains.annotations.ApiStatus;
+import org.joml.Vector3d;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
+@ApiStatus.Internal
 public class BlockDisplayEquivalent {
 
 
     private final BlockData blockData;
-    private final Vector3d position;
+    private final ArmorStandPool pool;
+    private MoveAction cachedMove;
+    private Vector3d position;
     private final World world;
-    private float size;
-    private ArmorStand armorStand;
+    private Size size;
+    private final ArmorStandSession armorStandSession;
+    private boolean sizeUpdated;
 
-    public BlockDisplayEquivalent(BlockData blockData, Vector3d position, World world, float size) {
+    public BlockDisplayEquivalent(BlockData blockData, Vector3d position, World world, float size, ArmorStandPool armorStandPool) {
         this.blockData = blockData;
         this.position = position;
-        this.size = size;
+        this.size = Size.fromFloat(size);
         this.world = world;
+        this.pool = armorStandPool;
+        this.cachedMove = new MoveAction(position, size);
+        this.armorStandSession = new ArmorStandSession(armorStandPool, position, world);
     }
 
-    public void spawn() {
-        this.armorStand = world.spawn(determinePositionFromSize(position), ArmorStand.class);
-        armorStand.setVisible(false);
-        armorStand.setPersistent(false);
-        armorStand.setGravity(false);
-        armorStand.setCollidable(false);
-        updateSize();
+    public void move(Vector3d to, float scale) {
+        this.cachedMove = new MoveAction(to, scale);
     }
 
-    public void move(Vector3d to) {
-        Location toLocation = determinePositionFromSize(to);
-        if (armorStand.getPassengers().isEmpty()) {
-            armorStand.teleport(toLocation);
-            return;
-        }
-        List<Entity> passengers = armorStand.getPassengers();
-        passengers.forEach(armorStand::removePassenger);
-        armorStand.teleport(toLocation);
-        passengers.forEach(armorStand::addPassenger);
-    }
-
-    public void setSize(float size) {
-        if (size != this.size) {
-            this.size = size;
-            updateSize();
-        }
+    private boolean setSize(float size) {
+        Size newSize = Size.fromFloat(size);
+        Size oldSize = this.size;
+        this.size = newSize;
+        return newSize != oldSize;
     }
 
     public void remove() {
-        armorStand.getPassengers().forEach(Entity::remove);
-        armorStand.remove();
+        armorStandSession.end();
     }
 
     public void freeze() {
-        armorStand.setVelocity(new Vector());
+        armorStandSession.freeze();
     }
 
     public void updateSize() {
-        if (size == 1F) {
-            armorStand.setSmall(false);
-            if (armorStand.getPassengers().isEmpty()) {
-                FallingBlock fallingBlock = EntityUtils.spawnFallingBlock(world, blockData, VectorConverter.toVector3d(armorStand.getLocation()));
+        Optional<ArmorStand> armorStandOptional = armorStandSession.nextArmorStand(size);
+        if(armorStandOptional.isEmpty()){
+            return;
+        }
+        ArmorStand armorStand = armorStandOptional.get();
+        switch (size) {
+            case LARGE -> {
+                FallingBlock fallingBlock = EntityUtils.spawnFallingBlock(world, blockData, position);
                 armorStand.addPassenger(fallingBlock);
             }
-            return;
+            case MEDIUM -> armorStand.getEquipment().setHelmet(new ItemStack(blockData.getMaterial()));
+            case SMALL -> {
+                armorStand.getEquipment().setHelmet(new ItemStack(blockData.getMaterial()));
+                armorStand.setSmall(true);
+            }
         }
-        armorStand.getPassengers().forEach(Entity::remove);
-        if (size >= 0.5F) {
-            armorStand.getEquipment().setHelmet(new ItemStack(blockData.getMaterial()));
-            armorStand.setSmall(false);
-            return;
-        }
-        if (size >= 0.25F) {
-            armorStand.getEquipment().setHelmet(new ItemStack(blockData.getMaterial()));
-            armorStand.setSmall(true);
-            return;
-        }
-        armorStand.getEquipment().clear();
+        this.sizeUpdated = false;
     }
 
-    private Location determinePositionFromSize(Vector3d position) {
-        if (size == 1F) {
-            return VectorConverter.toLocation(position, world).subtract(-0.5, 1.475, -0.5);
+    public void tick() {
+        if (sizeUpdated) {
+            updateSize();
         }
-        if (size >= 0.5F) {
-            return VectorConverter.toLocation(position, world).subtract(-0.5, 1.475 - 0.25, -0.5);
+        if (cachedMove != null) {
+            position = cachedMove.to;
+            this.sizeUpdated = setSize(cachedMove.scale);
+            armorStandSession.moveTo(cachedMove.to);
         }
-        return VectorConverter.toLocation(position, world).subtract(-0.5, 0.9875 - 0.625, -0.5);
+    }
+    private record MoveAction(Vector3d to, float scale) {
     }
 }

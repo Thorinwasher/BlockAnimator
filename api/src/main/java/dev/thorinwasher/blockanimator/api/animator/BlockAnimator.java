@@ -7,7 +7,7 @@ import org.joml.Vector3d;
 
 public interface BlockAnimator<B> {
 
-    void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<B> blockSupplier);
+    void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<B> blockSupplier, Matrix4f transform);
 
     void blockPlace(ImmutableVector3i identifier, BlockSupplier<B> blockSupplier);
 
@@ -15,5 +15,7 @@ public interface BlockAnimator<B> {
 
     void finishAnimation(BlockSupplier<B> blockSupplier);
 
-    void setTransform(ImmutableVector3i identifier, Matrix4f transform);
+    default void tick() {
+        // By default, nothing should be done
+    }
 }

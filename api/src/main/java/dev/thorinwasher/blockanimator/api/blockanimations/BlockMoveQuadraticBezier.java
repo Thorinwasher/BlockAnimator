@@ -77,4 +77,8 @@ public class BlockMoveQuadraticBezier implements BlockMoveAnimation {
         bezierCurve.add(new BlockAnimationFrame(to, BlockMoveType.PLACE, new Matrix4f()));
         return bezierCurve;
     }
+    
+    public void addBlockTransform(BlockTransformation blockTransformation) {
+        this.blockTransform = blockTransformation;
+    }
 }

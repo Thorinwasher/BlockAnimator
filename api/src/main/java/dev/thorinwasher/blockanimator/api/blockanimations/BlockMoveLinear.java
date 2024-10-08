@@ -39,4 +39,8 @@ public class BlockMoveLinear implements BlockMoveAnimation {
         frames.add(new BlockAnimationFrame(to, BlockMoveType.PLACE, new Matrix4f()));
         return new CompiledBlockMoveAnimation(frames);
     }
+
+    public void addBlockTransform(BlockTransformation blockTransformation) {
+        this.blockTransform = blockTransformation;
+    }
 }

@@ -13,6 +13,7 @@ import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveAnimation;
 import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveLinear;
 import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveQuadraticBezier;
 import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
+import dev.thorinwasher.blockanimator.api.blockanimations.transformation.ResizeTransformation;
 import dev.thorinwasher.blockanimator.api.selector.*;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.timer.BlockTimer;
@@ -47,6 +48,7 @@ public class AnimateCommand implements CommandExecutor {
             return false;
         }
         BlockMoveAnimation blockMoveAnimation = getMovement(args[0], player.getLocation());
+        blockMoveAnimation.addBlockTransform(new ResizeTransformation(1.25f, 0.25f, value -> value));
         BlockSupplier<BlockData> blockSupplier = getBLockSupplier(player, Integer.parseInt(args[2]));
         BlockTimer blockTimer = new LinearBlockTimer(Integer.parseInt(args[3]));
         BlockSelector blockSelector = getBlockSelector(args[1]);

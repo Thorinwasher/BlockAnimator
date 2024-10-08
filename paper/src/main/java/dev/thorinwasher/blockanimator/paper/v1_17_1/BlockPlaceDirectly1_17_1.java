@@ -11,22 +11,25 @@ import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class BlockPlaceDirectly1_17_1 implements BlockAnimator<BlockData> {
 
     private final World world;
+    private final ArmorStandPool pool;
     private final Map<ImmutableVector3i, BlockDisplayEquivalent> armorStands = new HashMap<>();
 
     public BlockPlaceDirectly1_17_1(World world) {
         this.world = world;
+        this.pool = new ArmorStandPool(world);
     }
 
     @Override
-    public void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<BlockData> blockSupplier) {
+    public void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<BlockData> blockSupplier, Matrix4f transform) {
         BlockDisplayEquivalent blockEquivalent = spawnOrGetFallingBlock(identifier, to, blockSupplier);
-        blockEquivalent.move(to);
+        Vector3f scale = new Vector3f();
+        transform.getScale(scale);
+        blockEquivalent.move(to, scale.get(scale.maxComponent()));
     }
 
     @Override
@@ -45,22 +48,21 @@ public class BlockPlaceDirectly1_17_1 implements BlockAnimator<BlockData> {
 
     @Override
     public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
-        // All blocks are already placed directly, nothing more needs to be done
+        pool.clean();
     }
 
     @Override
-    public void setTransform(ImmutableVector3i identifier, Matrix4f transform) {
-        BlockDisplayEquivalent blockDisplayEquivalent = armorStands.get(identifier);
-        Vector3f scale = new Vector3f();
-        transform.getScale(scale);
-        blockDisplayEquivalent.setSize(scale.length());
+    public void tick() {
+        for (BlockDisplayEquivalent blockDisplayEquivalent : this.armorStands.values()) {
+            blockDisplayEquivalent.tick();
+        }
+        pool.tick();
     }
 
     private BlockDisplayEquivalent spawnOrGetFallingBlock(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier) {
         BlockDisplayEquivalent blockEquivalent = armorStands.get(identifier);
         if (blockEquivalent == null) {
-            blockEquivalent = new BlockDisplayEquivalent(blockSupplier.getBlock(identifier), position, world, 0.25F);
-            blockEquivalent.spawn();
+            blockEquivalent = new BlockDisplayEquivalent(blockSupplier.getBlock(identifier), position, world, 0.25F, pool);
             armorStands.put(identifier, blockEquivalent);
         }
         return blockEquivalent;
