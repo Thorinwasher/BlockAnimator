@@ -16,12 +16,10 @@ import java.util.*;
 public class BlockPlaceDirectly1_17_1 implements BlockAnimator<BlockData> {
 
     private final World world;
-    private final ArmorStandPool pool;
     private final Map<ImmutableVector3i, BlockDisplayEquivalent> armorStands = new HashMap<>();
 
     public BlockPlaceDirectly1_17_1(World world) {
         this.world = world;
-        this.pool = new ArmorStandPool(world);
     }
 
     @Override
@@ -48,21 +46,13 @@ public class BlockPlaceDirectly1_17_1 implements BlockAnimator<BlockData> {
 
     @Override
     public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
-        pool.clean();
-    }
-
-    @Override
-    public void tick() {
-        for (BlockDisplayEquivalent blockDisplayEquivalent : this.armorStands.values()) {
-            blockDisplayEquivalent.tick();
-        }
-        pool.tick();
+        // NO-OP
     }
 
     private BlockDisplayEquivalent spawnOrGetEquivalent(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier) {
         BlockDisplayEquivalent blockEquivalent = armorStands.get(identifier);
         if (blockEquivalent == null) {
-            blockEquivalent = new BlockDisplayEquivalent(blockSupplier.getBlock(identifier), position, world, 0.25F, pool);
+            blockEquivalent = new BlockDisplayEquivalent(blockSupplier.getBlock(identifier), position, world, 0.25F);
             armorStands.put(identifier, blockEquivalent);
         }
         return blockEquivalent;

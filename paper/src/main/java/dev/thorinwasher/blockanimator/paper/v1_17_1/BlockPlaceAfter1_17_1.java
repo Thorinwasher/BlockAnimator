@@ -20,11 +20,9 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockData> {
     private final int maxEntities;
     private final Map<ImmutableVector3i, BlockDisplayEquivalent> fallingBlocks = new HashMap<>();
     private final List<ImmutableVector3i> blocksToRemove = new ArrayList<>();
-    private final ArmorStandPool pool;
 
     public BlockPlaceAfter1_17_1(World world, int maxEntities) {
         this.world = world;
-        this.pool = new ArmorStandPool(world);
         this.maxEntities = maxEntities;
     }
 
@@ -60,22 +58,12 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockData> {
         });
         blockSupplier.placeBlocks(blocksToRemove);
         blocksToRemove.clear();
-        pool.clean();
-    }
-
-    @Override
-    public void tick() {
-        pool.tick();
-
-        for (BlockDisplayEquivalent blockDisplayEquivalent : this.fallingBlocks.values()) {
-            blockDisplayEquivalent.tick();
-        }
     }
 
     private BlockDisplayEquivalent spawnOrGetFallingBlock(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier) {
         BlockDisplayEquivalent blockEquivalent = fallingBlocks.get(identifier);
         if (blockEquivalent == null) {
-            blockEquivalent = new BlockDisplayEquivalent(blockSupplier.getBlock(identifier), position, world, 0.25F, pool);
+            blockEquivalent = new BlockDisplayEquivalent(blockSupplier.getBlock(identifier), position, world, 0.25F);
             fallingBlocks.put(identifier, blockEquivalent);
         }
         return blockEquivalent;

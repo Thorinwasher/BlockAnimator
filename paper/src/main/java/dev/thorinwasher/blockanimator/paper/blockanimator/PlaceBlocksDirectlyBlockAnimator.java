@@ -42,9 +42,4 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<BlockData
     public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
         handle.finishAnimation(blockSupplier);
     }
-
-    @Override
-    public void tick() {
-        handle.tick();
-    }
 }

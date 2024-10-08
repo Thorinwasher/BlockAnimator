@@ -14,8 +14,4 @@ public interface BlockAnimator<B> {
     void blockDestroy(ImmutableVector3i identifier);
 
     void finishAnimation(BlockSupplier<B> blockSupplier);
-
-    default void tick() {
-        // By default, nothing should be done
-    }
 }

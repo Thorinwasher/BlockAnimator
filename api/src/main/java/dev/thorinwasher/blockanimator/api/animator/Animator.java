@@ -41,7 +41,6 @@ public class Animator<B> {
         }
         AnimationFrame frame = animation.getNext();
         BlockSupplier<B> supplier = animation.supplier();
-        blockAnimator.tick();
         for (Map.Entry<ImmutableVector3i, BlockAnimationFrame> entry : frame.currentToDestination().entrySet()) {
             ImmutableVector3i identifier = entry.getKey();
             Vector3d position = entry.getValue().position();
