@@ -9,28 +9,29 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3d;
 
+import java.util.LinkedList;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Queue;
 
 @ApiStatus.Internal
 public class BlockDisplayEquivalent {
 
 
     private final BlockData blockData;
-    private final ArmorStandPool pool;
     private MoveAction cachedMove;
     private Vector3d position;
     private final World world;
     private Size size;
     private final ArmorStandSession armorStandSession;
     private boolean sizeUpdated;
+    private final Queue<Integer> queuedUpdates = new LinkedList<>();
+    private int internalTime = 0;
 
     public BlockDisplayEquivalent(BlockData blockData, Vector3d position, World world, float size, ArmorStandPool armorStandPool) {
         this.blockData = blockData;
         this.position = position;
         this.size = Size.fromFloat(size);
         this.world = world;
-        this.pool = armorStandPool;
         this.cachedMove = new MoveAction(position, size);
         this.armorStandSession = new ArmorStandSession(armorStandPool, position, world);
     }
@@ -54,9 +55,9 @@ public class BlockDisplayEquivalent {
         armorStandSession.freeze();
     }
 
-    public void updateSize() {
+    private void updateSize() {
         Optional<ArmorStand> armorStandOptional = armorStandSession.nextArmorStand(size);
-        if(armorStandOptional.isEmpty()){
+        if (armorStandOptional.isEmpty()) {
             return;
         }
         ArmorStand armorStand = armorStandOptional.get();
@@ -75,15 +76,21 @@ public class BlockDisplayEquivalent {
     }
 
     public void tick() {
-        if (sizeUpdated) {
+        if (!queuedUpdates.isEmpty() && queuedUpdates.peek() <= internalTime) {
+            queuedUpdates.remove();
             updateSize();
         }
         if (cachedMove != null) {
             position = cachedMove.to;
-            this.sizeUpdated = setSize(cachedMove.scale);
+            boolean sizeUpdated = setSize(cachedMove.scale);
             armorStandSession.moveTo(cachedMove.to);
+            if(sizeUpdated){
+                queuedUpdates.add(internalTime + 5);
+            }
         }
+        internalTime++;
     }
+
     private record MoveAction(Vector3d to, float scale) {
     }
 }

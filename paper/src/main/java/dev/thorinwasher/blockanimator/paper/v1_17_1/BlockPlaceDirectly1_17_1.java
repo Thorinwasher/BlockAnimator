@@ -26,7 +26,7 @@ public class BlockPlaceDirectly1_17_1 implements BlockAnimator<BlockData> {
 
     @Override
     public void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<BlockData> blockSupplier, Matrix4f transform) {
-        BlockDisplayEquivalent blockEquivalent = spawnOrGetFallingBlock(identifier, to, blockSupplier);
+        BlockDisplayEquivalent blockEquivalent = spawnOrGetEquivalent(identifier, to, blockSupplier);
         Vector3f scale = new Vector3f();
         transform.getScale(scale);
         blockEquivalent.move(to, scale.get(scale.maxComponent()));
@@ -59,7 +59,7 @@ public class BlockPlaceDirectly1_17_1 implements BlockAnimator<BlockData> {
         pool.tick();
     }
 
-    private BlockDisplayEquivalent spawnOrGetFallingBlock(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier) {
+    private BlockDisplayEquivalent spawnOrGetEquivalent(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier) {
         BlockDisplayEquivalent blockEquivalent = armorStands.get(identifier);
         if (blockEquivalent == null) {
             blockEquivalent = new BlockDisplayEquivalent(blockSupplier.getBlock(identifier), position, world, 0.25F, pool);
