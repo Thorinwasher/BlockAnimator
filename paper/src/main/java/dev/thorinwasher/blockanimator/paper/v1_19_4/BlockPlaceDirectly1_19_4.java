@@ -32,7 +32,7 @@ public class BlockPlaceDirectly1_19_4 implements BlockAnimator<BlockData> {
 
     @Override
     public void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<BlockData> blockSupplier, Matrix4f transform) {
-        BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, to, blockSupplier);
+        BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, to, blockSupplier, transform);
         Location current = blockDisplay.getLocation();
         Vector delta = VectorConverter.toLocation(to, world).subtract(current).toVector();
         Transformation transformation = blockDisplay.getTransformation();
@@ -70,13 +70,13 @@ public class BlockPlaceDirectly1_19_4 implements BlockAnimator<BlockData> {
         blockDisplay.setTransformation(new Transformation(transformation.getTranslation(), transformation.getLeftRotation(), scale, rotation));
     }
 
-    private BlockDisplay getOrSpawnBlockDisplay(ImmutableVector3i identifier, Vector3d startingPos, BlockSupplier<BlockData> blockSupplier) {
+    private BlockDisplay getOrSpawnBlockDisplay(ImmutableVector3i identifier, Vector3d startingPos, BlockSupplier<BlockData> blockSupplier, Matrix4f transform) {
         BlockDisplay blockDisplay = blockDisplays.get(identifier);
         if (blockDisplay == null) {
             Optional<Vector3d> middlePoint = ManhatanNearest.findClosestPosition(
                     identifier.asVector3d().mul(0.5).add(new Vector3d(startingPos).mul(0.5)),
                     Vector3d -> VectorConverter.toLocation(Vector3d, world).getBlock().getType().isAir(), 5);
-            blockDisplay = EntityUtils.spawnBLockDisplay(world, blockSupplier.getBlock(identifier), middlePoint.orElse(startingPos));
+            blockDisplay = EntityUtils.spawnBLockDisplay(world, blockSupplier.getBlock(identifier), middlePoint.orElse(startingPos), transform);
             blockDisplays.put(identifier, blockDisplay);
         }
         return blockDisplay;

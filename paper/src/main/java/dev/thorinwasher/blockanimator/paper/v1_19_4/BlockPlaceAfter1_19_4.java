@@ -9,12 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
-import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,14 +31,14 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockData> {
 
     @Override
     public void blockMove(ImmutableVector3i identifier, Vector3d to, BlockSupplier<BlockData> blockSupplier, Matrix4f transform) {
-        BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, to, blockSupplier);
-        blockDisplay.teleport(VectorConverter.toLocation(to, world));
-        setTransform(blockDisplay, transform);
+        BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, to, blockSupplier, transform);
+        BlockDisplayUtil.applyTransformation(blockDisplay, transform);
+        blockDisplay.teleport(VectorConverter.toLocation(to, world).subtract(BlockDisplayUtil.getOffset(blockDisplay)));
     }
 
     @Override
     public void blockPlace(ImmutableVector3i identifier, BlockSupplier<BlockData> blockSupplier) {
-        BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, identifier.asVector3d(), blockSupplier);
+        BlockDisplay blockDisplay = getOrSpawnBlockDisplay(identifier, identifier.asVector3d(), blockSupplier, new Matrix4f());
         blockDisplay.teleport(VectorConverter.toLocation(identifier, world));
         blockDisplay.setVelocity(new Vector());
         entitiesToRemove.add(identifier);
@@ -65,21 +62,10 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockData> {
         entitiesToRemove.clear();
     }
 
-    private void setTransform(BlockDisplay blockDisplay, Matrix4f transform) {
-        Transformation transformation = blockDisplay.getTransformation();
-        Quaternionf rotation = new Quaternionf();
-        transform.getNormalizedRotation(rotation);
-        Vector3f translation = new Vector3f();
-        transform.getTranslation(translation);
-        Vector3f scale = new Vector3f();
-        transform.getScale(scale);
-        blockDisplay.setTransformation(new Transformation(translation, transformation.getLeftRotation(), scale, rotation));
-    }
-
-    private BlockDisplay getOrSpawnBlockDisplay(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier) {
+    private BlockDisplay getOrSpawnBlockDisplay(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier, Matrix4f transform) {
         BlockDisplay blockDisplay = blockDisplays.get(identifier);
         if (blockDisplay == null) {
-            blockDisplay = EntityUtils.spawnBLockDisplay(world, blockSupplier.getBlock(identifier), position);
+            blockDisplay = EntityUtils.spawnBLockDisplay(world, blockSupplier.getBlock(identifier), position, transform);
             blockDisplays.put(identifier, blockDisplay);
         }
         return blockDisplay;

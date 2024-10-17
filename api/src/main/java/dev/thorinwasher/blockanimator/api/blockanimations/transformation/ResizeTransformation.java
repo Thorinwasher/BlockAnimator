@@ -17,6 +17,12 @@ public class ResizeTransformation implements BlockTransformation {
         this.pathCompletionSupplier = pathCompletionSupplier;
     }
 
+    public ResizeTransformation(float from, float to) {
+        this.from = from;
+        this.to = to;
+        pathCompletionSupplier = value -> value;
+    }
+
     @Override
     public @NotNull Matrix4f getTransform(double pathCompletion) {
         double completion = pathCompletionSupplier.apply(pathCompletion);

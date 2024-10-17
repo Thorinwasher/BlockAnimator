@@ -30,12 +30,12 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
 
     @Override
     public void blockMove(ImmutableVector3i identifier, Vector3d position, BlockSupplier<Block> blockSupplier, Matrix4f transform) {
-        Entity blockDisplay = spawnOrGetBLockDisplay(identifier, position, blockSupplier);
+        Entity blockDisplay = spawnOrGetBLockDisplay(identifier, position, blockSupplier, transform);
         Pos from = blockDisplay.getPosition();
-        Vec delta = VectorConversion.toVec(position).sub(from);
+        BlockAnimationUtils.applyTransform(blockDisplay, transform);
+        Vec delta = VectorConversion.toVec(position).sub(BlockAnimationUtils.getOffset(blockDisplay)).sub(from);
         BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
         blockDisplayMeta.setTranslation(delta);
-        setTransform(blockDisplay, transform);
     }
 
     @Override
@@ -52,13 +52,13 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
         instance.setBlock(VectorConversion.toVec(identifier), Block.AIR);
     }
 
-    private Entity spawnOrGetBLockDisplay(ImmutableVector3i identifier, Vector3d startingPosition, BlockSupplier<Block> blockSupplier) {
+    private Entity spawnOrGetBLockDisplay(ImmutableVector3i identifier, Vector3d startingPosition, BlockSupplier<Block> blockSupplier, Matrix4f transform) {
         Entity blockDisplay = blockEntityMap.get(identifier);
         if (blockDisplay == null) {
             Block block = blockSupplier.getBlock(identifier);
             Vector3d middlePoint = identifier.asVector3d().mul(0.5).add(new Vector3d(startingPosition).mul(0.5));
             Optional<Vector3d> position = ManhatanNearest.findClosestPosition(middlePoint, Vector3d -> instance.getBlock(VectorConversion.toVec(Vector3d)).isAir(), 10);
-            blockDisplay = BlockAnimationUtils.spawnBlockDisplay(position.orElse(startingPosition), block, instance);
+            blockDisplay = BlockAnimationUtils.spawnBlockDisplay(position.orElse(startingPosition), block, instance, transform);
             blockEntityMap.put(identifier, blockDisplay);
         }
         return blockDisplay;
@@ -67,15 +67,5 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
     @Override
     public void finishAnimation(BlockSupplier<Block> blockSupplier) {
         // Nothing needs to be done here, as the blocks are placed directly
-    }
-
-    private void setTransform(Entity blockDisplay, Matrix4f transform) {
-        BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) blockDisplay.getEntityMeta();
-        Quaternionf rotation = new Quaternionf();
-        transform.rotation(rotation);
-        blockDisplayMeta.setRightRotation(new float[]{rotation.x, rotation.y, rotation.z, rotation.w});
-        Vector3f scale = new Vector3f();
-        transform.getScale(scale);
-        blockDisplayMeta.setScale(VectorConversion.toVec(new Vector3d(scale)));
     }
 }

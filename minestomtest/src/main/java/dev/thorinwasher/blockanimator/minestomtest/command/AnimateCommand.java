@@ -7,8 +7,10 @@ import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveAnimation;
 import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveLinear;
 import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveQuadraticBezier;
 import dev.thorinwasher.blockanimator.api.blockanimations.pathcompletion.EaseOutCubicPathCompletionSupplier;
+import dev.thorinwasher.blockanimator.api.blockanimations.transformation.ResizeTransformation;
 import dev.thorinwasher.blockanimator.api.selector.*;
 import dev.thorinwasher.blockanimator.minestom.PlaceBlocksAfterBlockAnimator;
+import dev.thorinwasher.blockanimator.minestom.PlaceBlocksDirectlyBlockAnimator;
 import dev.thorinwasher.blockanimator.minestomtest.Main;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.timer.BlockTimer;
@@ -46,6 +48,7 @@ public class AnimateCommand extends Command {
                         new BlockMoveQuadraticBezier(Main.toVector3d(player.getPosition()), new EaseOutCubicPathCompletionSupplier(0.2), () -> 10D);
                 default -> throw new IllegalArgumentException("Unknown block animator");
             };
+            blockMoveAnimation.addBlockTransform(new ResizeTransformation(1F, 0.25F, value -> value));
             BlockSupplier<Block> blockSupplier = BlockSupplierUtil.getBlockSupplier(player, context.get(size), player.getInstance());
             BlockTimer blockTimer = new LinearBlockTimer(context.get(time));
             BlockSelector blockSelector = switch (context.get(selector)) {
@@ -58,7 +61,7 @@ public class AnimateCommand extends Command {
             Animation<Block> animation = new TimerAnimation<>(blockSelector, blockMoveAnimation, blockSupplier, blockTimer, 100);
             Thread thread = new Thread(animation::compile);
             thread.start();
-            Animator<Block> animator = new Animator<>(animation, new PlaceBlocksAfterBlockAnimator(1000, player.getInstance()));
+            Animator<Block> animator = new Animator<>(animation, new PlaceBlocksDirectlyBlockAnimator(player.getInstance()));
             Task timer = MinecraftServer.getSchedulerManager().scheduleTask(animator::nextTick, TaskSchedule.immediate(), TaskSchedule.tick(1));
             animator.addOnCompletion(timer::cancel);
         }), motion, selector, size, time);

@@ -1,5 +1,7 @@
 package dev.thorinwasher.blockanimator.paper;
 
+import dev.thorinwasher.blockanimator.paper.v1_19_4.BlockDisplayUtil;
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,13 +14,14 @@ import org.bukkit.inventory.ItemStack;
 public class EntityUtils {
 
 
-    public static BlockDisplay spawnBLockDisplay(World world, BlockData blockData, Vector3d position) {
+    public static BlockDisplay spawnBLockDisplay(World world, BlockData blockData, Vector3d position, Matrix4f transformation) {
         Location location = VectorConverter.toLocation(position, world);
-        BlockDisplay blockDisplay = world.spawn(location, BlockDisplay.class);
-        blockDisplay.setBlock(blockData);
-        blockDisplay.setPersistent(false);
-        blockDisplay.setGravity(false);
-        return blockDisplay;
+        return world.spawn(location, BlockDisplay.class, blockDisplay ->  {
+            blockDisplay.setBlock(blockData);
+            blockDisplay.setPersistent(false);
+            blockDisplay.setGravity(false);
+            BlockDisplayUtil.applyTransformation(blockDisplay, transformation);
+        });
     }
 
     public static FallingBlock spawnFallingBlock(World world, BlockData blockData, Vector3d position) {

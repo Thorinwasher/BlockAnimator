@@ -26,4 +26,8 @@ public class VectorConversion {
     public static ImmutableVector3i toImmutableVector3i(Point point) {
         return new ImmutableVector3i(point.blockX(), point.blockY(), point.blockZ());
     }
+
+    public static Vec root3(Vec from){
+        return new Vec(Math.pow(from.x(), 1D/3), Math.pow(from.y(), 1D/3), Math.pow(from.z(), 1D/3));
+    }
 }
