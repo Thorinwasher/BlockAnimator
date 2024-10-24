@@ -43,7 +43,7 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockData> {
         blockDisplay.setVelocity(new Vector());
         entitiesToRemove.add(identifier);
         if (entitiesToRemove.size() > maxEntities) {
-            finishAnimation(blockSupplier);
+            placeBlocks(blockSupplier);
         }
     }
 
@@ -52,14 +52,20 @@ public class BlockPlaceAfter1_19_4 implements BlockAnimator<BlockData> {
         world.getBlockAt(VectorConverter.toLocation(identifier, world)).setType(Material.AIR);
     }
 
-    @Override
-    public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
+    private void placeBlocks(BlockSupplier<BlockData> blockSupplier) {
         entitiesToRemove.forEach(identifier -> {
             BlockDisplay blockDisplay = blockDisplays.remove(identifier);
             blockDisplay.remove();
         });
         blockSupplier.placeBlocks(entitiesToRemove);
         entitiesToRemove.clear();
+    }
+
+    @Override
+    public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
+        placeBlocks(blockSupplier);
+        blockDisplays.values().forEach(BlockDisplay::remove);
+        blockDisplays.clear();
     }
 
     private BlockDisplay getOrSpawnBlockDisplay(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier, Matrix4f transform) {

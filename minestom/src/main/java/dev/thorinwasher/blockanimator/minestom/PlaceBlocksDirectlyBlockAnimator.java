@@ -66,6 +66,7 @@ public class PlaceBlocksDirectlyBlockAnimator implements BlockAnimator<Block> {
 
     @Override
     public void finishAnimation(BlockSupplier<Block> blockSupplier) {
-        // Nothing needs to be done here, as the blocks are placed directly
+        blockEntityMap.values().forEach(Entity::remove);
+        blockEntityMap.clear();
     }
 }

@@ -41,7 +41,7 @@ public class PlaceBlocksAfterBlockAnimator implements BlockAnimator<Block> {
         BlockAnimationUtils.applyTransform(blockDisplay, new Matrix4f());
         blockDisplay.teleport(VectorConversion.toVec(identifier).sub(BlockAnimationUtils.getOffset(blockDisplay)).asPosition());
         if (entitiesToRemove.size() > maxAmount) {
-            finishAnimation(blockSupplier);
+            placeBlocks(blockSupplier);
         }
         entitiesToRemove.put(identifier, blockDisplay);
         blockEntityMap.remove(identifier);
@@ -62,13 +62,18 @@ public class PlaceBlocksAfterBlockAnimator implements BlockAnimator<Block> {
         return blockDisplay;
     }
 
-    @Override
-    public void finishAnimation(BlockSupplier<Block> blockSupplier) {
+    private void placeBlocks(BlockSupplier<Block> blockSupplier) {
         entitiesToRemove.forEach((identifier, entity) -> {
-            BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) entity.getEntityMeta();
-            entity.getInstance().setBlock(VectorConversion.toVec(identifier), blockDisplayMeta.getBlockStateId());
+            entity.getInstance().setBlock(VectorConversion.toVec(identifier), blockSupplier.getBlock(identifier));
             entity.remove();
         });
         entitiesToRemove.clear();
+    }
+
+    @Override
+    public void finishAnimation(BlockSupplier<Block> blockSupplier) {
+        placeBlocks(blockSupplier);
+        blockEntityMap.values().forEach(Entity::remove);
+        blockEntityMap.clear();
     }
 }

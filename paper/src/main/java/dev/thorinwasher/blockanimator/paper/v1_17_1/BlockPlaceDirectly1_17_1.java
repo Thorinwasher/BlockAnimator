@@ -46,7 +46,8 @@ public class BlockPlaceDirectly1_17_1 implements BlockAnimator<BlockData> {
 
     @Override
     public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
-        // NO-OP
+        armorStands.values().forEach(BlockDisplayEquivalent::remove);
+        armorStands.clear();
     }
 
     private BlockDisplayEquivalent spawnOrGetEquivalent(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier) {

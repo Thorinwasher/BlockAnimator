@@ -41,7 +41,7 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockData> {
         fallingBlock.freeze();
         blocksToRemove.add(identifier);
         if (blocksToRemove.size() > maxEntities) {
-            finishAnimation(blockSupplier);
+            placeBlocks(blockSupplier);
         }
     }
 
@@ -50,14 +50,20 @@ public class BlockPlaceAfter1_17_1 implements BlockAnimator<BlockData> {
         world.getBlockAt(identifier.x(), identifier.y(), identifier.z()).setType(Material.AIR);
     }
 
-    @Override
-    public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
+    private void placeBlocks(BlockSupplier<BlockData> blockSupplier){
         blocksToRemove.forEach(identifier -> {
             BlockDisplayEquivalent fallingBlock = fallingBlocks.remove(identifier);
             fallingBlock.remove();
         });
         blockSupplier.placeBlocks(blocksToRemove);
         blocksToRemove.clear();
+    }
+
+    @Override
+    public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
+        placeBlocks(blockSupplier);
+        fallingBlocks.values().forEach(BlockDisplayEquivalent::remove);
+        fallingBlocks.clear();
     }
 
     private BlockDisplayEquivalent spawnOrGetFallingBlock(ImmutableVector3i identifier, Vector3d position, BlockSupplier<BlockData> blockSupplier) {

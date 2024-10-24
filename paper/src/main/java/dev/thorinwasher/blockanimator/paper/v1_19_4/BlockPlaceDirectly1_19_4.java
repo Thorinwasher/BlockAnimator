@@ -56,7 +56,8 @@ public class BlockPlaceDirectly1_19_4 implements BlockAnimator<BlockData> {
 
     @Override
     public void finishAnimation(BlockSupplier<BlockData> blockSupplier) {
-        // Blocks are placed dynamically, nothing needs to be done
+        blockDisplays.values().forEach(BlockDisplay::remove);
+        blockDisplays.clear();
     }
 
     private void setTransform(BlockDisplay blockDisplay, Matrix4f transform) {
