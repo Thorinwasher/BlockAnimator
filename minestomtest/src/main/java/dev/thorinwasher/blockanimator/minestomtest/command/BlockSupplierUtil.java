@@ -13,7 +13,7 @@ import net.minestom.server.instance.block.Block;
 public class BlockSupplierUtil {
 
     public static BlockSupplier<Block> getBlockSupplier(Player player, int size, Instance instance) {
-        Point corner = player.getPosition().add(20, 0, 0);
+        Point corner = player.getPosition().add(2, 0, 0);
         if (Registry.playerSchematicRegistry.containsKey(player.getUuid())) {
             return new SchemBlockSupplier(Registry.playerSchematicRegistry.get(player.getUuid()), Rotation.NONE, corner, instance);
         }

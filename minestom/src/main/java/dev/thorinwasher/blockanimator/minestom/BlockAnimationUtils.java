@@ -23,9 +23,9 @@ public class BlockAnimationUtils {
 
     public static void applyTransform(Entity entity, Matrix4f transform) {
         BlockDisplayMeta blockDisplayMeta = (BlockDisplayMeta) entity.getEntityMeta();
-        AxisAngle4f rotation = new AxisAngle4f();
-        transform.getRotation(rotation);
-        blockDisplayMeta.setRightRotation(new float[]{rotation.x, rotation.y, rotation.z, rotation.angle});
+        Quaternionf rotation = new Quaternionf();
+        transform.getUnnormalizedRotation(rotation);
+        blockDisplayMeta.setRightRotation(new float[]{rotation.x, rotation.y, rotation.z, rotation.w});
         Vector3f scale = new Vector3f();
         transform.getScale(scale);
         blockDisplayMeta.setScale(VectorConversion.toVec(new Vector3d(scale)));

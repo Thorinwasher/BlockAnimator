@@ -1,6 +1,7 @@
 package dev.thorinwasher.blockanimator.minestomtest;
 
 import dev.thorinwasher.blockanimator.minestomtest.command.AnimateCommand;
+import dev.thorinwasher.blockanimator.minestomtest.command.HologramCommand;
 import dev.thorinwasher.blockanimator.minestomtest.command.LoadSchemCommand;
 import dev.thorinwasher.blockanimator.minestomtest.command.SequentialAnimateCommand;
 import net.minestom.server.MinecraftServer;
@@ -31,6 +32,7 @@ public class Main {
         commandManager.register(new SequentialAnimateCommand());
         commandManager.register(new AnimateCommand());
         commandManager.register(new LoadSchemCommand());
+        commandManager.register(new HologramCommand());
 
         minecraftServer.start(System.getProperty("address", "0.0.0.0"), Integer.getInteger("port", 25565));
     }
