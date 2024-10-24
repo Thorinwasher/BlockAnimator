@@ -22,6 +22,6 @@ public class BlockDisplayUtil {
         transform.getTranslation(translation);
         Vector3f scale = new Vector3f();
         transform.getScale(scale);
-        blockDisplay.setTransformation(new Transformation(translation, transformation.getLeftRotation(), scale, rotation));
+        blockDisplay.setTransformation(new Transformation(translation, rotation, scale, transformation.getRightRotation()));
     }
 }
