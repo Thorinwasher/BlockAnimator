@@ -1,11 +1,8 @@
 package dev.thorinwasher.blockanimator.api.animation;
 
-import dev.thorinwasher.blockanimator.api.blockanimations.BlockMoveType;
 import dev.thorinwasher.blockanimator.api.blockanimations.CompiledBlockMoveAnimation;
-import dev.thorinwasher.blockanimator.api.container.TwoTuple;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
-import org.joml.Vector3d;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
@@ -39,6 +36,6 @@ public interface Animation<B> {
     enum AnimationStatus {
         COMPLETED,
         READY_FOR_ANIMATION,
-        COMPILING_TO_BUFFER
+        COMPILING
     }
 }

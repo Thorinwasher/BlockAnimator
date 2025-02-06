@@ -78,7 +78,7 @@ public class HologramAnimation<B> implements Animation<B> {
         if ((buffer < currentCompiled && currentCompiled > current + 1) || compileCompleted) {
             return AnimationStatus.READY_FOR_ANIMATION;
         } else {
-            return AnimationStatus.COMPILING_TO_BUFFER;
+            return AnimationStatus.COMPILING;
         }
     }
 

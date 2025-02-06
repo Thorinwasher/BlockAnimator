@@ -36,7 +36,7 @@ public class Animator<B> {
             blockAnimator.finishAnimation(animation.supplier());
             return true;
         }
-        if (status == Animation.AnimationStatus.COMPILING_TO_BUFFER) {
+        if (status == Animation.AnimationStatus.COMPILING) {
             return false;
         }
         AnimationFrame frame = animation.getNext();

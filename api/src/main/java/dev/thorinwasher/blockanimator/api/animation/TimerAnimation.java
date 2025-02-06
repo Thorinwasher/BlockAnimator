@@ -7,9 +7,9 @@ import dev.thorinwasher.blockanimator.api.selector.CompiledBlockSelector;
 import dev.thorinwasher.blockanimator.api.supplier.BlockSupplier;
 import dev.thorinwasher.blockanimator.api.supplier.ImmutableVector3i;
 import dev.thorinwasher.blockanimator.api.timer.BlockTimer;
-import org.joml.Vector3d;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,7 +58,8 @@ public class TimerAnimation<B> implements Animation<B> {
 
     @Override
     public AnimationFrame getNext() {
-        return frames.remove(currentFrame.getAndIncrement());
+        AnimationFrame frame = frames.remove(currentFrame.getAndIncrement());
+        return frame == null ? new AnimationFrame(Map.of()) : frame;
     }
 
     @Override
@@ -71,7 +72,7 @@ public class TimerAnimation<B> implements Animation<B> {
         if ((framesBuffer < currentCompiled && currentCompiled > current + 1) || compileCompleted) {
             return AnimationStatus.READY_FOR_ANIMATION;
         } else {
-            return AnimationStatus.COMPILING_TO_BUFFER;
+            return AnimationStatus.COMPILING;
         }
     }
 

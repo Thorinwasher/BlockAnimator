@@ -80,7 +80,8 @@ public class SequentialAnimation<B> implements Animation<B> {
 
     @Override
     public AnimationFrame getNext() {
-        return frames.remove(currentFrame.getAndIncrement());
+        AnimationFrame frame = frames.remove(currentFrame.getAndIncrement());
+        return frame == null ? new AnimationFrame(Map.of()) : frame;
     }
 
     @Override
@@ -93,7 +94,7 @@ public class SequentialAnimation<B> implements Animation<B> {
         if ((buffer < currentCompiled && currentCompiled > current + 1) || compileCompleted) {
             return AnimationStatus.READY_FOR_ANIMATION;
         } else {
-            return AnimationStatus.COMPILING_TO_BUFFER;
+            return AnimationStatus.COMPILING;
         }
     }
 
