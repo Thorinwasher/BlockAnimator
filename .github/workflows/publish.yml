@@ -1,7 +1,7 @@
 name: Publish package to maven central
 on:
-  push:
-    branches: [ main ]
+  release:
+    types: [published]
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -9,16 +9,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Calculate version
-        uses: paulhatch/semantic-version@v5.4.0
-        id: calculate-version
-        with:
-          tag_prefix: "v"
-          major_pattern: "(MAJOR)"
-          minor_pattern: "(MINOR)"
-          version_format: "${major}.${minor}.${patch}"
-          # If enabled, diagnostic information will be added to the action output.
-          debug: true
+
+      - name: Parse version
+        run: |
+          TAG=${{ github.event.release.tag_name }}
+          echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+
       - uses: actions/setup-java@v4
         with:
           java-version: '21'
@@ -33,7 +29,6 @@ jobs:
         run: bash gradlew :api:publishAndReleaseToMavenCentral --no-configuration-cache
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.calculate-version.outputs.version }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
@@ -42,7 +37,6 @@ jobs:
         run: bash gradlew :paper:publishAndReleaseToMavenCentral --no-configuration-cache
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.calculate-version.outputs.version }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
@@ -51,7 +45,6 @@ jobs:
         run: bash gradlew :minestom:publishAndReleaseToMavenCentral --no-configuration-cache
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.calculate-version.outputs.version }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
@@ -60,12 +53,6 @@ jobs:
         run: bash gradlew :worldedit:publishAndReleaseToMavenCentral --no-configuration-cache
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ steps.calculate-version.outputs.version }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.USER_TOKEN_MAVEN_CENTRAL }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.USER_KEY_MAVEN_CENTRAL }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
-          
-      - name: Create release
-        uses: ncipollo/release-action@v1.14.0
-        with:
-          tag: v${{ steps.calculate-version.outputs.version }}
