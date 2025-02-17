@@ -25,6 +25,9 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
     private final com.sk89q.worldedit.world.World world;
     private final Transform transform;
     private final Transform transformInverse;
+    private static final SideEffectSet SIDE_EFFECT_SET = SideEffectSet.none()
+            .with(SideEffect.NETWORK, SideEffect.State.ON)
+            .with(SideEffect.LIGHTING, SideEffect.State.ON);
 
     public PaperClipboardBlockSupplier(Clipboard clipboard, Location origin, Transform transform) throws WorldEditException {
         this.clipboard = clipboard;
@@ -56,7 +59,7 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
         BlockVector3 regionPosition = relativeWorldCoordinate.add(clipboard.getOrigin());
         BaseBlock baseBlock = getBlock(regionPosition);
         try {
-            world.setBlock(WEVectorConverter.toBlockVector3(identifier), baseBlock, SideEffectSet.none().with(SideEffect.LIGHTING, SideEffect.State.ON));
+            world.setBlock(WEVectorConverter.toBlockVector3(identifier), baseBlock, SIDE_EFFECT_SET);
         } catch (WorldEditException e) {
             e.printStackTrace();
         }
@@ -64,13 +67,12 @@ public class PaperClipboardBlockSupplier implements BlockSupplier<BlockData> {
 
     @Override
     public void placeBlocks(List<ImmutableVector3i> identifiers) {
-        SideEffectSet sideEffectSet = SideEffectSet.none().with(SideEffect.LIGHTING, SideEffect.State.ON);
         try {
             for (ImmutableVector3i identifier : identifiers) {
                 BlockVector3 relativeWorldCoordinate = applyTransformInverse(WEVectorConverter.toBlockVector3(identifier.sub(origin)));
                 BlockVector3 regionPosition = relativeWorldCoordinate.add(clipboard.getOrigin());
                 BaseBlock baseBlock = getBlock(regionPosition);
-                world.setBlock(WEVectorConverter.toBlockVector3(identifier), baseBlock, sideEffectSet);
+                world.setBlock(WEVectorConverter.toBlockVector3(identifier), baseBlock, SIDE_EFFECT_SET);
             }
         } catch (WorldEditException e) {
             e.printStackTrace();
